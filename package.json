@@ -46,6 +46,7 @@
   "dependencies": {
     "@babel/runtime": "^7.20.0",
     "@bam.tech/react-native-image-resizer": "^3.0.10",
+    "@nutui/nutui-react-native": "^0.0.8",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-camera-roll/camera-roll": "^7.8.3",
     "@react-native-clipboard/clipboard": "^1.14.3",
@@ -81,6 +82,7 @@
     "expo-file-system": "~16.0.9",
     "expo-image-picker": "~14.7.1",
     "expo-keep-awake": "~12.8.2",
+    "expo-linear-gradient": "^15.0.7",
     "expo-location": "~16.5.5",
     "expo-sensors": "~12.9.1",
     "react": "^18",
