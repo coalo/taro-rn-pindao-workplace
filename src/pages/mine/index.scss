@@ -1,7 +1,4 @@
-// 导入公共样式变量和 Mixins
-@import '../../styles/variables.scss';
-@import '../../styles/mixins.scss';
-
+// H5 端样式（RN 端使用内联样式，不使用此文件）
 .page {
   width: 100%;
   min-height: 100vh;

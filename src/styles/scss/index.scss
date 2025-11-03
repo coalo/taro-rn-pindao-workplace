@@ -1,0 +1,22 @@
+/**
+ * SCSS 样式系统入口文件
+ * 用于 H5 和小程序端
+ * 
+ * 使用方式：
+ * @import '@/styles/scss';
+ * 或按需导入：
+ * @import '@/styles/scss/variables';
+ * @import '@/styles/scss/mixins';
+ */
+
+// 导入变量
+@import './variables';
+
+// 导入 Mixins
+@import './mixins';
+
+// 导入全局样式（可选，根据需要引入）
+// @import './global';
+
+// 导入工具类（可选，按需引入）
+// @import './utilities';

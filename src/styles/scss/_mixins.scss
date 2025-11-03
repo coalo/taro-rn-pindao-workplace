@@ -1,0 +1,251 @@
+/**
+ * 公共 Mixins
+ * 常用的样式混合
+ */
+
+// ==================== 布局 Mixins ====================
+
+// Flex 居中
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flex 垂直居中
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+// Flex 水平居中
+@mixin flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+// Flex 两端对齐
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Flex 均匀分布
+@mixin flex-around {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+// Flex 列布局
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Flex 列布局居中
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// ==================== 文本 Mixins ====================
+
+// 单行文本省略
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本省略
+@mixin text-ellipsis-multi($lines: 2) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
+
+// 文本不可选
+@mixin text-no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+// ==================== 尺寸 Mixins ====================
+
+// 正方形
+@mixin square($size) {
+  width: $size;
+  height: $size;
+}
+
+// 圆形
+@mixin circle($size) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+}
+
+// 固定宽高比
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    display: block;
+    padding-top: ($height / $width) * 100%;
+  }
+}
+
+// ==================== 定位 Mixins ====================
+
+// 绝对定位居中
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 绝对定位填满
+@mixin absolute-full {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// 固定定位填满
+@mixin fixed-full {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// ==================== 视觉效果 Mixins ====================
+
+// 清除浮动
+@mixin clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 隐藏滚动条
+@mixin hide-scrollbar {
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE 10+
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome Safari
+  }
+}
+
+// 自定义滚动条
+@mixin custom-scrollbar($width: 8px, $color: #ccc) {
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: $color;
+    border-radius: $width / 2;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+// 毛玻璃效果
+@mixin glass-effect($blur: 10px, $opacity: 0.8) {
+  backdrop-filter: blur($blur);
+  background-color: rgba(255, 255, 255, $opacity);
+}
+
+// 渐变背景
+@mixin gradient-bg($start-color, $end-color, $direction: to bottom) {
+  background: linear-gradient($direction, $start-color, $end-color);
+}
+
+// ==================== 交互 Mixins ====================
+
+// 点击态
+@mixin active-effect($scale: 0.98, $opacity: 0.8) {
+  &:active {
+    transform: scale($scale);
+    opacity: $opacity;
+    transition: all $transition-duration-fast $transition-timing-function;
+  }
+}
+
+// 悬浮态
+@mixin hover-effect($scale: 1.05) {
+  transition: transform $transition-duration-base $transition-timing-function;
+  
+  &:hover {
+    transform: scale($scale);
+  }
+}
+
+// 禁用态
+@mixin disabled-state {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// ==================== 动画 Mixins ====================
+
+// 淡入
+@mixin fade-in($duration: $transition-duration-base) {
+  animation: fadeIn $duration $transition-timing-function;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// 滑入（从下方）
+@mixin slide-up($duration: $transition-duration-base) {
+  animation: slideUp $duration $transition-timing-function;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+// 缩放进入
+@mixin zoom-in($duration: $transition-duration-base) {
+  animation: zoomIn $duration $transition-timing-function;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

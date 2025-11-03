@@ -1,6 +1,6 @@
 // 导入公共样式变量和 Mixins
-@import '@/styles/variables.scss';
-@import '@/styles/mixins.scss';
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
 
 .quick-start-page {
   min-height: 100vh;
