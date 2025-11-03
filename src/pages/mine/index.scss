@@ -2,4 +2,121 @@
 @import '../../styles/variables.scss';
 @import '../../styles/mixins.scss';
 
-// React Native 主要使用 StyleSheet，SCSS 文件保留供 H5/小程序使用
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+// 用户信息区域
+.user-section {
+  padding: 24px;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+}
+
+.user-info {
+  margin-left: 16px;
+  flex: 1;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.user-group {
+  font-size: 14px;
+  color: #999;
+}
+
+// 菜单区域
+.menu-section {
+  padding: 0 24px 24px;
+}
+
+.menu-list {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  min-height: 56px;
+}
+
+.menu-item-logout {
+  background-color: #fff;
+}
+
+.menu-item-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.menu-icon {
+  font-size: 20px;
+  margin-right: 16px;
+}
+
+.menu-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.menu-text-logout {
+  color: #ff4d4f;
+}
+
+.menu-arrow {
+  font-size: 20px;
+  color: #d9d9d9;
+}
+
+.divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-left: 52px;
+}
+
+// 底部备案信息
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 24px;
+  padding-bottom: 32px;
+  min-height: 150px;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: #bfbfbf;
+  line-height: 20px;
+  text-align: center;
+}

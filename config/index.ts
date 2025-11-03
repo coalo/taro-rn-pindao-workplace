@@ -49,6 +49,15 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        // 屏蔽特定警告
+        chain.merge({
+          ignoreWarnings: [
+            (warning: any) => 
+              warning.message && warning.message.includes('webpackExports'),
+            (warning: any) => 
+              warning.message && warning.message.includes('Sass @import rules are deprecated')
+          ]
+        })
       }
     },
     h5: {
@@ -64,6 +73,9 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chunkFilename: 'css/[name].[chunkhash].css'
       },
       postcss: {
+        pxtransform: {
+          enable: false  // 关闭 H5 端的 px 转换，避免样式缩放
+        },
         autoprefixer: {
           enable: true,
           config: {}
@@ -78,6 +90,15 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        // 屏蔽特定警告
+        chain.merge({
+          ignoreWarnings: [
+            (warning: any) => 
+              warning.message && warning.message.includes('webpackExports'),
+            (warning: any) => 
+              warning.message && warning.message.includes('Sass @import rules are deprecated')
+          ]
+        })
       }
     },
     rn: {

@@ -1,7 +1,113 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
-import { StyleSheet } from 'react-native'
-import { colors, spacing, fontSize, getShadowStyle } from '../../styles/tokens'
+import './index.scss'
+
+// 在 RN 环境下使用 StyleSheet
+const isRN = process.env.TARO_ENV === 'rn'
+
+const styles = isRN ? {
+  page: {
+    flex: 1,
+    backgroundColor: '#f5f7fa',
+  },
+  userSection: {
+    padding: 24,
+  },
+  userCard: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+  },
+  userInfo: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: '700' as const,
+    color: '#333',
+    marginBottom: 8,
+  },
+  userGroup: {
+    fontSize: 14,
+    color: '#999',
+  },
+  menuSection: {
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingBottom: 24,
+  },
+  menuList: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden' as const,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  menuItem: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    padding: 16,
+    minHeight: 56,
+  },
+  menuItemLeft: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    flex: 1,
+  },
+  menuIcon: {
+    fontSize: 20,
+    marginRight: 16,
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  menuTextLogout: {
+    fontSize: 16,
+    color: '#ff4d4f',
+  },
+  menuArrow: {
+    fontSize: 20,
+    color: '#d9d9d9',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#f0f0f0',
+    marginLeft: 52,
+  },
+  footer: {
+    flex: 1,
+    flexDirection: 'column' as const,
+    justifyContent: 'flex-end' as const,
+    alignItems: 'center' as const,
+    padding: 24,
+    paddingBottom: 32,
+    minHeight: 150,
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#bfbfbf',
+    lineHeight: 20,
+    textAlign: 'center' as const,
+  },
+} : {}
 
 export default function Mine() {
   useLoad(() => {
@@ -28,50 +134,55 @@ export default function Mine() {
   }
 
   return (
-    <View style={styles.page}>
+    <View className={isRN ? '' : 'page'} style={isRN ? styles.page : {}}>
       {/* 顶部用户信息区域 */}
-      <View style={styles.userSection}>
-        <View style={styles.userCard}>
+      <View className={isRN ? '' : 'user-section'} style={isRN ? styles.userSection : {}}>
+        <View className={isRN ? '' : 'user-card'} style={isRN ? styles.userCard : {}}>
           {/* 左侧头像 */}
           <Image 
             src={userInfo.avatar}
-            style={styles.avatar}
+            className={isRN ? '' : 'avatar'}
+            style={isRN ? styles.avatar : {}}
           />
           
           {/* 右侧信息 */}
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>{userInfo.name}</Text>
-            <Text style={styles.userGroup}>{userInfo.group}</Text>
+          <View className={isRN ? '' : 'user-info'} style={isRN ? styles.userInfo : {}}>
+            <Text className={isRN ? '' : 'user-name'} style={isRN ? styles.userName : {}}>{userInfo.name}</Text>
+            <Text className={isRN ? '' : 'user-group'} style={isRN ? styles.userGroup : {}}>{userInfo.group}</Text>
           </View>
         </View>
       </View>
 
       {/* 中部菜单列表 */}
-      <View style={styles.menuSection}>
-        <View style={styles.menuList}>
+      <View className={isRN ? '' : 'menu-section'} style={isRN ? styles.menuSection : {}}>
+        <View className={isRN ? '' : 'menu-list'} style={isRN ? styles.menuList : {}}>
           {menuItems.map((item, index) => (
             <View key={item.id}>
               <View 
-                style={item.isLogout ? { ...styles.menuItem, ...styles.menuItemLogout } : styles.menuItem}
+                className={isRN ? '' : (item.isLogout ? 'menu-item menu-item-logout' : 'menu-item')}
+                style={isRN ? styles.menuItem : {}}
                 onClick={() => handleMenuClick(item)}
               >
                 {/* 左侧图标和文字 */}
-                <View style={styles.menuItemLeft}>
-                  <Text style={styles.menuIcon}>{item.icon}</Text>
-                  <Text style={item.isLogout ? { ...styles.menuText, ...styles.menuTextLogout } : styles.menuText}>
+                <View className={isRN ? '' : 'menu-item-left'} style={isRN ? styles.menuItemLeft : {}}>
+                  <Text className={isRN ? '' : 'menu-icon'} style={isRN ? styles.menuIcon : {}}>{item.icon}</Text>
+                  <Text 
+                    className={isRN ? '' : (item.isLogout ? 'menu-text menu-text-logout' : 'menu-text')}
+                    style={isRN ? (item.isLogout ? styles.menuTextLogout : styles.menuText) : {}}
+                  >
                     {item.title}
                   </Text>
                 </View>
                 
                 {/* 右侧箭头 */}
                 {!item.isLogout && (
-                  <Text style={styles.menuArrow}>›</Text>
+                  <Text className={isRN ? '' : 'menu-arrow'} style={isRN ? styles.menuArrow : {}}>›</Text>
                 )}
               </View>
               
               {/* 分割线 */}
               {index < menuItems.length - 1 && (
-                <View style={styles.divider} />
+                <View className={isRN ? '' : 'divider'} style={isRN ? styles.divider : {}} />
               )}
             </View>
           ))}
@@ -79,112 +190,11 @@ export default function Mine() {
       </View>
 
       {/* 底部备案信息 */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>版本号: v1.0.0</Text>
-        <Text style={styles.footerText}>备案号: 京ICP备2024XXXXX号</Text>
-        <Text style={styles.footerText}>© 2024 公司名称. All Rights Reserved.</Text>
+      <View className={isRN ? '' : 'footer'} style={isRN ? styles.footer : {}}>
+        <Text className={isRN ? '' : 'footer-text'} style={isRN ? styles.footerText : {}}>版本号: v1.0.0</Text>
+        <Text className={isRN ? '' : 'footer-text'} style={isRN ? styles.footerText : {}}>备案号: 京ICP备2024XXXXX号</Text>
+        <Text className={isRN ? '' : 'footer-text'} style={isRN ? styles.footerText : {}}>© 2024 公司名称. All Rights Reserved.</Text>
       </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: colors.bgSecondary,
-  },
-  
-  // 用户信息区域
-  userSection: {
-    padding: spacing.md,
-  },
-  userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.bg,
-    borderRadius: 12,
-    padding: spacing.lg,
-    ...getShadowStyle('base'),
-  },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-  },
-  userInfo: {
-    marginLeft: spacing.md,
-    flex: 1,
-  },
-  userName: {
-    fontSize: fontSize.xl,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: spacing.xs,
-  },
-  userGroup: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-  },
-  
-  // 菜单区域
-  menuSection: {
-    padding: spacing.md,
-    paddingTop: 0,
-  },
-  menuList: {
-    backgroundColor: colors.bg,
-    borderRadius: 12,
-    overflow: 'hidden',
-    ...getShadowStyle('sm'),
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: spacing.md,
-    minHeight: 56,
-  },
-  menuItemLogout: {
-    backgroundColor: colors.bg,
-  },
-  menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  menuIcon: {
-    fontSize: fontSize.xl,
-    marginRight: spacing.md,
-  },
-  menuText: {
-    fontSize: fontSize.base,
-    color: colors.text,
-  },
-  menuTextLogout: {
-    color: colors.error,
-  },
-  menuArrow: {
-    fontSize: fontSize.xl,
-    color: colors.textTertiary,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.divider,
-    marginLeft: spacing.md + fontSize.xl + spacing.md,
-  },
-  
-  // 底部备案信息
-  footer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
-  footerText: {
-    fontSize: fontSize.xs,
-    color: colors.textTertiary,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-})

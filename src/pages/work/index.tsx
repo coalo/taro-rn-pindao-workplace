@@ -1,8 +1,19 @@
 import { View } from '@tarojs/components'
-import { useLoad } from '@tarojs/taro'
-import { WebView } from 'react-native-webview'
-import { StyleSheet, Alert } from 'react-native'
+import Taro, { useLoad } from '@tarojs/taro'
 import './index.scss'
+
+// 条件导入：RN 环境使用 react-native-webview，其他环境使用 Taro WebView
+let WebViewComponent: any
+let isRN = false
+
+if (process.env.TARO_ENV === 'rn') {
+  isRN = true
+  const RNWebView = require('react-native-webview').WebView
+  WebViewComponent = RNWebView
+} else {
+  const { WebView } = require('@tarojs/components')
+  WebViewComponent = WebView
+}
 
 export default function Work() {
   useLoad(() => {
@@ -11,7 +22,7 @@ export default function Work() {
 
   // H5子系统列表页面URL
   // 方式1: 使用远程URL（替换为你的实际URL）
-  // const webViewSource = { uri: 'https://your-h5-system.com/subsystems' }
+  // const webViewUrl = 'https://your-h5-system.com/subsystems'
 
   // 方式2: 使用内嵌 HTML（用于演示）
   const htmlContent = `
@@ -52,19 +63,28 @@ export default function Work() {
         <div class="subsystem-list" id="subsystemList"></div>
         <script>
             const subsystems = [
-                { id: 1, name: '客户管理系统2', desc: '客户信息管理、客户关系维护', icon: '👥', color: '#1890ff', url: 'https://baidu.com' },
-                { id: 2, name: '订单管理系统', desc: '订单处理、订单跟踪、订单统计', icon: '📋', color: '#52c41a', url: 'https://order.example.com' },
-                { id: 3, name: '库存管理系统', desc: '库存盘点、出入库管理、库存预警', icon: '📦', color: '#faad14', url: 'https://inventory.example.com' },
-                { id: 4, name: '财务管理系统', desc: '财务报表、收支管理、成本核算', icon: '💰', color: '#f5222d', url: 'https://finance.example.com' },
-                { id: 5, name: '人事管理系统', desc: '员工信息、考勤管理、薪资核算', icon: '👔', color: '#722ed1', url: 'https://hr.example.com' },
-                { id: 6, name: '数据分析系统', desc: '数据统计、可视化报表、智能分析', icon: '📊', color: '#13c2c2', url: 'https://analytics.example.com' }
+                { id: 1, name: '客户管理系统', desc: '客户信息管理、客户关系维护', icon: '👥', color: '#1890ff', url: 'https://www.baidu.com' },
+                { id: 2, name: '订单管理系统', desc: '订单处理、订单跟踪、订单统计', icon: '📋', color: '#52c41a', url: 'https://www.taobao.com' },
+                { id: 3, name: '库存管理系统', desc: '库存盘点、出入库管理、库存预警', icon: '📦', color: '#faad14', url: 'https://www.jd.com' },
+                { id: 4, name: '财务管理系统', desc: '财务报表、收支管理、成本核算', icon: '💰', color: '#f5222d', url: 'https://www.163.com' },
+                { id: 5, name: '人事管理系统', desc: '员工信息、考勤管理、薪资核算', icon: '👔', color: '#722ed1', url: 'https://www.sina.com.cn' },
+                { id: 6, name: '数据分析系统', desc: '数据统计、可视化报表、智能分析', icon: '📊', color: '#13c2c2', url: 'https://www.qq.com' }
             ];
             function renderSubsystems() {
                 const list = document.getElementById('subsystemList');
                 subsystems.forEach(sys => {
                     const item = document.createElement('div');
                     item.className = 'subsystem-item';
-                    item.onclick = () => window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'navigate', data: sys }));
+                    item.onclick = () => {
+                        // 在 H5 环境中使用 postMessage
+                        if (window.parent) {
+                            window.parent.postMessage(JSON.stringify({ type: 'navigate', data: sys }), '*');
+                        }
+                        // 在 RN WebView 中使用 ReactNativeWebView
+                        if (window.ReactNativeWebView) {
+                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'navigate', data: sys }));
+                        }
+                    };
                     item.innerHTML = \`<div class="subsystem-icon" style="background: \${sys.color}20;">\${sys.icon}</div><div class="subsystem-content"><div class="subsystem-name">\${sys.name}</div><div class="subsystem-desc">\${sys.desc}</div></div><div class="subsystem-arrow">›</div>\`;
                     list.appendChild(item);
                 });
@@ -75,67 +95,81 @@ export default function Work() {
     </html>
   `
 
-  const webViewSource = { html: htmlContent }
+  // 将HTML转换为Data URL
+  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`
 
   // WebView消息处理
   const handleMessage = (event: any) => {
     try {
-      const data = JSON.parse(event.nativeEvent.data)
+      // RN 和 H5 的事件结构不同
+      const messageData = isRN ? event.nativeEvent.data : event.detail.data
+      const data = JSON.parse(messageData)
       console.log('收到H5消息:', data)
 
       if (data.type === 'navigate') {
         // 处理子系统跳转
-        Alert.alert(
-          '打开子系统',
-          `名称: ${data.data.name}\n描述: ${data.data.desc}`,
-          [
-            { text: '取消', style: 'cancel' },
-            {
-              text: '确定',
-              onPress: () => {
-                console.log('跳转到:', data.data.url)
-
-                // 这里可以添加跳转逻辑，比如打开新的WebView页面
-                // 或者使用 Taro.navigateTo 跳转到其他页面
-              }
+        Taro.showModal({
+          title: '打开子系统',
+          content: `名称: ${data.data.name}\n描述: ${data.data.desc}`,
+          success: (res) => {
+            if (res.confirm) {
+              console.log('跳转到:', data.data.url)
+              // 这里可以添加跳转逻辑，比如打开新的WebView页面
+              // 或者使用 Taro.navigateTo 跳转到其他页面
             }
-          ]
-        )
+          }
+        })
       }
     } catch (error) {
       console.error('解析H5消息失败:', error)
     }
   }
 
+  // 渲染 WebView
+  const renderWebView = () => {
+    if (isRN) {
+      // React Native 环境
+      return (
+        <WebViewComponent
+          source={{ html: htmlContent }}
+          onMessage={handleMessage}
+          onError={(e: any) => {
+            console.warn('WebView error: ', e)
+            Taro.showToast({
+              title: '页面加载失败',
+              icon: 'none'
+            })
+          }}
+          onLoad={() => {
+            console.log('WebView loaded successfully')
+          }}
+          style={{ flex: 1 }}
+        />
+      )
+    } else {
+      // H5/小程序环境
+      return (
+        <WebViewComponent
+          src={dataUrl}
+          onMessage={handleMessage}
+          onError={(e: any) => {
+            console.warn('WebView error: ', e)
+            Taro.showToast({
+              title: '页面加载失败',
+              icon: 'none'
+            })
+          }}
+          onLoad={() => {
+            console.log('WebView loaded successfully')
+          }}
+        />
+      )
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <WebView
-        source={webViewSource}
-        style={styles.webview}
-        onMessage={handleMessage}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        scalesPageToFit={true}
-        startInLoadingState={true}
-        onError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent
-          console.warn('WebView error: ', nativeEvent)
-          Alert.alert('加载错误', '页面加载失败')
-        }}
-        onLoad={() => {
-          console.log('WebView loaded successfully')
-        }}
-      />
+    <View className="container">
+      {renderWebView()}
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  webview: {
-    flex: 1,
-  },
-})
