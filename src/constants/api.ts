@@ -10,6 +10,9 @@ export const API_CONFIG = {
   RETRY_DELAY: 1000,
 }
 
+// API 基础地址（为 services 层提供）
+export const API_BASE_URL = API_CONFIG.BASE_URL
+
 // ==================== HTTP 状态码 ====================
 export const HTTP_STATUS = {
   OK: 200,
