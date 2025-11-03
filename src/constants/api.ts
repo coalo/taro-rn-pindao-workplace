@@ -4,8 +4,9 @@
 
 // ==================== API 配置 ====================
 export const API_CONFIG = {
+  // 从环境变量中读取，由 Taro 构建时注入
   BASE_URL: process.env.API_BASE_URL || 'https://api.example.com',
-  TIMEOUT: 10000,
+  TIMEOUT: process.env.API_TIMEOUT || 10000,
   RETRY_TIMES: 3,
   RETRY_DELAY: 1000,
 }
