@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>子系统列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            padding: 16px;
+        }
+        
+        .subsystem-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .subsystem-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subsystem-item:active {
+            transform: scale(0.98);
+            background: #f9f9f9;
+        }
+        
+        .subsystem-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .subsystem-content {
+            flex: 1;
+        }
+        
+        .subsystem-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .subsystem-desc {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        .subsystem-arrow {
+            color: #ccc;
+            font-size: 18px;
+        }
+        
+        .header {
+            background: #fff;
+            margin: -16px -16px 16px;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">子系统列表</div>
+    
+    <div class="subsystem-list" id="subsystemList"></div>
+
+    <script>
+        // 子系统数据
+        const subsystems = [
+            {
+                id: 1,
+                name: '客户管理系统1',
+                desc: '客户信息管理、客户关系维护',
+                icon: '👥',
+                color: '#1890ff',
+                url: 'https://baidu.com'
+            },
+            {
+                id: 2,
+                name: '订单管理系统',
+                desc: '订单处理、订单跟踪、订单统计',
+                icon: '📋',
+                color: '#52c41a',
+                url: 'https://order.example.com'
+            },
+            {
+                id: 3,
+                name: '库存管理系统',
+                desc: '库存盘点、出入库管理、库存预警',
+                icon: '📦',
+                color: '#faad14',
+                url: 'https://inventory.example.com'
+            },
+            {
+                id: 4,
+                name: '财务管理系统',
+                desc: '财务报表、收支管理、成本核算',
+                icon: '💰',
+                color: '#f5222d',
+                url: 'https://finance.example.com'
+            },
+            {
+                id: 5,
+                name: '人事管理系统',
+                desc: '员工信息、考勤管理、薪资核算',
+                icon: '👔',
+                color: '#722ed1',
+                url: 'https://hr.example.com'
+            },
+            {
+                id: 6,
+                name: '数据分析系统',
+                desc: '数据统计、可视化报表、智能分析',
+                icon: '📊',
+                color: '#13c2c2',
+                url: 'https://analytics.example.com'
+            }
+        ];
+
+        // 渲染子系统列表
+        function renderSubsystems() {
+            const listContainer = document.getElementById('subsystemList');
+            
+            subsystems.forEach(system => {
+                const item = document.createElement('div');
+                item.className = 'subsystem-item';
+                item.onclick = () => handleSystemClick(system);
+                
+                item.innerHTML = `
+                    <div class="subsystem-icon" style="background: ${system.color}20;">
+                        ${system.icon}
+                    </div>
+                    <div class="subsystem-content">
+                        <div class="subsystem-name">${system.name}</div>
+                        <div class="subsystem-desc">${system.desc}</div>
+                    </div>
+                    <div class="subsystem-arrow">›</div>
+                `;
+                
+                listContainer.appendChild(item);
+            });
+        }
+
+        // 处理系统点击
+        function handleSystemClick(system) {
+            // 向 React Native 发送消息
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'navigate',
+                    data: system
+                }));
+            } else {
+                // 如果不在 WebView 中，直接跳转
+                alert(`将打开：${system.name}\nURL: ${system.url}`);
+            }
+        }
+
+        // 页面加载完成后渲染
+        document.addEventListener('DOMContentLoaded', renderSubsystems);
+    </script>
+</body>
+</html>

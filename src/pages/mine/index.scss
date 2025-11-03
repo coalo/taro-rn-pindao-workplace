@@ -1,0 +1,65 @@
+// 导入公共样式变量和 Mixins
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.mine-page {
+  min-height: 100vh;
+  background-color: $bg-color-secondary;
+  padding-bottom: $spacing-xl;
+
+  // 用户信息卡片
+  .user-card {
+    .avatar {
+      @include square(64px);
+      object-fit: cover;
+    }
+
+    .vip-badge {
+      padding: $spacing-xs $spacing-sm;
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      border-radius: $border-radius-base;
+    }
+  }
+
+  // 菜单列表
+  .menu-list {
+    .menu-item {
+      transition: background-color $transition-duration-fast;
+      border-radius: $border-radius-sm;
+
+      &:active {
+        background-color: $bg-color-secondary;
+      }
+
+      .menu-icon {
+        font-size: $font-size-xl;
+      }
+
+      .badge {
+        min-width: 18px;
+        height: 18px;
+        padding: 0 $spacing-xs;
+        background-color: $error-color;
+        border-radius: $border-radius-circle;
+        @include flex-center;
+      }
+    }
+
+    .divider {
+      height: $border-width-base;
+      background-color: $divider-color;
+      margin: $spacing-sm 0;
+    }
+  }
+
+  // 退出按钮
+  .logout-btn {
+    cursor: pointer;
+    transition: all $transition-duration-fast;
+
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.8;
+    }
+  }
+}
