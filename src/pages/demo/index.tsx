@@ -3,7 +3,11 @@ import Taro, { useLoad } from '@tarojs/taro'
 import { Button, Card, AdaptView } from '../../components/common'
 import { Button as UIButton } from '../../ui'
 import { getPlatform } from '../../utils/platform'
-import './index.scss'
+
+// 仅在非 RN 环境引入 SCSS
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 
 // 条件导入 RN 专属组件
 let NativeButton: any
