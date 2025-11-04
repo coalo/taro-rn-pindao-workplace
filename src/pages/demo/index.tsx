@@ -1,6 +1,7 @@
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
 import { Button, Card } from '../../components/common'
+import { Button as UIButton } from '../../ui'
 import { getPlatform } from '../../utils/platform'
 import './index.scss'
 
@@ -180,16 +181,95 @@ export default function Demo() {
         </Card>
       )}
 
+      {/* 新版 UI 组件 */}
+      <Card title="新版 UI 组件">
+        <View className="demo-section">
+          <Text className="section-desc">基础 UI 组件库</Text>
+          
+          <Text className="subsection-title">按钮类型</Text>
+          <View className="button-group">
+            <UIButton 
+              type="primary" 
+              onClick={() => handleButtonClick('UI Primary')}
+            >
+              Primary 按钮
+            </UIButton>
+            
+            <UIButton 
+              type="secondary" 
+              onClick={() => handleButtonClick('UI Secondary')}
+            >
+              Secondary 按钮
+            </UIButton>
+            
+            <UIButton 
+              type="ghost" 
+              onClick={() => handleButtonClick('UI Ghost')}
+            >
+              Ghost 按钮
+            </UIButton>
+            
+            <UIButton 
+              type="link" 
+              onClick={() => handleButtonClick('UI Link')}
+            >
+              Link 按钮
+            </UIButton>
+          </View>
+
+          <Text className="subsection-title">按钮尺寸</Text>
+          <View className="button-group">
+            <UIButton 
+              size="small"
+              onClick={() => handleButtonClick('UI Small')}
+            >
+              小按钮
+            </UIButton>
+            
+            <UIButton 
+              size="medium"
+              onClick={() => handleButtonClick('UI Medium')}
+            >
+              中按钮
+            </UIButton>
+            
+            <UIButton 
+              size="large"
+              onClick={() => handleButtonClick('UI Large')}
+            >
+              大按钮
+            </UIButton>
+          </View>
+
+          <Text className="subsection-title">按钮状态</Text>
+          <View className="button-group">
+            <UIButton 
+              disabled
+            >
+              禁用按钮
+            </UIButton>
+            
+            <UIButton 
+              loading
+            >
+              加载中按钮
+            </UIButton>
+          </View>
+        </View>
+      </Card>
+
       {/* 组件说明 */}
       <Card title="组件架构说明">
         <View className="demo-section">
           <Text className="subsection-title">📁 目录结构</Text>
           <Text className="code-text">components/</Text>
           <Text className="code-text">├── common/     # 通用组件（跨端）</Text>
-          <Text className="code-text">└── native/     # RN专属组件</Text>
+          <Text className="code-text">├── native/     # RN专属组件</Text>
+          <Text className="code-text">└── ui/         # 基础UI组件</Text>
 
           <Text className="subsection-title" style={{ marginTop: 16 }}>✨ 使用方式</Text>
           <Text className="feature-text">• 通用组件: import {'{'} Button {'}'} from '@/components'</Text>
+          <Text className="feature-text">• UI组件: import {'{'} Button {'}'} from '@/ui'</Text>
           <Text className="feature-text">• RN组件: 仅在RN环境可用</Text>
           <Text className="feature-text">• 通过 process.env.TARO_ENV 条件编译</Text>
         </View>
