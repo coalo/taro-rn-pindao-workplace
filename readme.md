@@ -37,6 +37,7 @@ import Taro from '@tarojs/taro'
 - **分类**：
   - `common/` - 跨端通用组件（优先使用）
   - `native/` - 平台特定组件（RN 专属）
+  - `ui/` - 基础 UI 组件（底层可复用）
 - **原则**：对外提供统一接口，内部处理平台差异
 
 ```typescript
@@ -49,6 +50,15 @@ export interface ButtonProps {
 
 // 内部根据平台使用不同实现
 import ButtonImpl from './Button'  // 默认实现
+
+// ui/Button/index.tsx - 基础UI组件
+export interface ButtonProps {
+  type?: 'primary' | 'secondary' | 'ghost' | 'link'
+  size?: 'small' | 'medium' | 'large'
+  disabled?: boolean
+  loading?: boolean
+  children: React.ReactNode
+}
 ```
 
 #### ⚙️ 第三层：平台适配层
@@ -95,6 +105,15 @@ src/
 │   │   └── Card/
 │   ├── native/              # RN 专属组件
 │   │   └── StatusBar/
+│   └── index.ts             # 统一导出入口
+│
+├── ui/                      # 【基础UI组件层】底层可复用组件
+│   ├── Button/              # 基础按钮组件
+│   │   ├── index.tsx        # H5/小程序实现
+│   │   ├── index.rn.tsx     # RN 实现
+│   │   ├── style.scss       # 样式文件
+│   │   ├── types.ts         # H5/小程序类型定义
+│   │   └── types.rn.ts      # RN 类型定义
 │   └── index.ts             # 统一导出入口
 │
 ├── utils/                    # 【平台适配层】工具函数
@@ -149,6 +168,44 @@ import { Button as AntButton } from '@ant-design/react-native'
 export function Button({ type, children, ...props }) {
   // 在这里统一处理跨端差异
   return <AntButton type={type}>{children}</AntButton>
+}
+```
+
+#### 示例 2：使用基础 UI 组件
+
+```typescript
+// ✅ 使用基础 UI 组件
+import { Button as UIButton } from '@/ui'
+
+function Page() {
+  return (
+    <View>
+      <UIButton type="primary" size="large">主要按钮</UIButton>
+      <UIButton type="secondary" size="medium">次要按钮</UIButton>
+      <UIButton type="ghost" size="small" disabled>禁用按钮</UIButton>
+    </View>
+  )
+}
+
+// 业务组件中使用基础 UI 组件
+// components/common/Button/index.tsx
+import { Button as UIButton } from '@/ui'
+
+export function Button({ type, size, disabled, children, ...props }) {
+  // 映射业务组件属性到基础 UI 组件
+  const uiType = type === 'primary' ? 'primary' : 'secondary'
+  const uiSize = size === 'large' ? 'large' : size === 'small' ? 'small' : 'medium'
+  
+  return (
+    <UIButton 
+      type={uiType} 
+      size={uiSize} 
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </UIButton>
+  )
 }
 ```
 
@@ -729,6 +786,13 @@ rn-test/
 │   ├── app.scss             # 全局样式
 │   ├── app.ts               # 应用入口
 │   └── index.html           # H5 入口
+├── dist/                    # 构建输出目录
+│   ├── h5/                  # H5 构建输出
+│   ├── weapp/               # 微信小程序构建输出
+│   ├── rn/                  # React Native 构建输出
+│   │   ├── android/         # Android bundle 输出
+│   │   └── ios/             # iOS bundle 输出
+│   └── [other-platform]/    # 其他平台构建输出
 ├── types/                   # TypeScript 类型定义
 ├── .eslintrc                # ESLint 配置
 ├── babel.config.js          # Babel 配置
@@ -742,28 +806,57 @@ rn-test/
 
 - **`components/common`**：存放跨端可复用的通用组件
 - **`components/native`**：存放 RN 专属组件，仅在 RN 端打包
+- **`ui`**：存放基础 UI 组件，提供底层可复用的 UI 元素
 - **`constants`**：统一管理业务常量
 - **`hooks`**：自定义 React Hooks，封装可复用逻辑
 - **`services`**：API 请求和业务服务层
 - **`styles/scss`**：SCSS 样式文件，仅 H5 和小程序使用
 - **`styles/tokens`**：Design Tokens，跨端使用的设计变量
 - **`utils`**：工具函数和平台适配层
+- **`dist`**：构建输出目录，根据不同平台分别存放构建结果
 
-## release
+## 构建与部署
 
-### build ios bundle
+### 构建输出目录
 
-`pnpm build:rn --platform ios`
+项目构建后会根据目标平台将输出文件存放在 `dist/` 目录下的对应子目录中：
 
-### build Android bundle
+- `dist/h5/` - H5 应用构建输出
+- `dist/weapp/` - 微信小程序构建输出
+- `dist/rn/android/` - React Native Android bundle 输出
+- `dist/rn/ios/` - React Native iOS bundle 输出
 
-`pnpm build:rn --platform android`
+### 构建命令
 
-### release ios APP
+```bash
+# 构建 H5 应用
+pnpm build:h5
+
+# 构建微信小程序
+pnpm build:weapp
+
+# 构建 React Native 应用
+pnpm build:rn
+
+# 构建所有平台
+pnpm build:all
+```
+
+### 构建特定平台的 React Native bundle
+
+```bash
+# 构建 iOS bundle
+pnpm build:rn --platform ios
+
+# 构建 Android bundle
+pnpm build:rn --platform android
+```
+
+### 发布 iOS 应用
 
 see [publishing-to-app-store](https://reactnative.cn/docs/publishing-to-app-store) for details.
 
-### release android apk
+### 发布 Android APK
 
 see [signed-apk-android](https://reactnative.cn/docs/signed-apk-android) for details.
 
