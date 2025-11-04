@@ -16,7 +16,14 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       828: 1.81 / 2
     },
     sourceRoot: 'src',
-    outputRoot: 'dist',
+    outputRoot: process.env.TARO_ENV === 'h5' ? 'dist/h5' : 
+               process.env.TARO_ENV === 'weapp' ? 'dist/weapp' : 
+               process.env.TARO_ENV === 'alipay' ? 'dist/alipay' : 
+               process.env.TARO_ENV === 'swan' ? 'dist/swan' : 
+               process.env.TARO_ENV === 'tt' ? 'dist/tt' : 
+               process.env.TARO_ENV === 'qq' ? 'dist/qq' : 
+               process.env.TARO_ENV === 'jd' ? 'dist/jd' : 
+               process.env.TARO_ENV === 'quickapp' ? 'dist/quickapp' : 'dist',
     plugins: [],
     defineConstants: {
     },
