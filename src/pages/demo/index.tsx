@@ -1,6 +1,6 @@
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
-import { Button, Card } from '../../components/common'
+import { Button, Card, AdaptView } from '../../components/common'
 import { Button as UIButton } from '../../ui'
 import { getPlatform } from '../../utils/platform'
 import './index.scss'
@@ -31,7 +31,7 @@ export default function Demo() {
   }
 
   return (
-    <ScrollView className="demo-page">
+    <ScrollView className="demo-page"><View className="demo-content">
       {/* RN 状态栏 */}
       {isRN && StatusBar && <StatusBar barStyle="dark-content" />}
 
@@ -140,6 +140,20 @@ export default function Demo() {
           <Card bordered={false}>
             <Text>无边框卡片</Text>
           </Card>
+        </View>
+      </Card>
+
+      <Card title="AdaptView 原子类演示">
+        <View className="demo-section">
+          <Text className="section-desc">在业务页写 className，如 p-xl / px-base，无需环境判断</Text>
+
+          <AdaptView className="p-xl px-base mt-base" style={{ backgroundColor: '#fff' }}>
+            <Text>这个区域使用语义原子类：p-xl、px-base、mt-base</Text>
+          </AdaptView>
+
+          <AdaptView className="pt-sm pb-md px-lg m-base" style={{ backgroundColor: '#fff', marginTop: 12 }}>
+            <Text>支持方向类：pt-sm / pb-md / px-lg / m-base</Text>
+          </AdaptView>
         </View>
       </Card>
 
@@ -278,6 +292,6 @@ export default function Demo() {
       <View className="demo-footer">
         <Text className="footer-text">更多组件持续开发中...</Text>
       </View>
-    </ScrollView>
+    </View></ScrollView>
   )
 }

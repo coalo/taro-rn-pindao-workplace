@@ -109,6 +109,8 @@ const styles = isRN ? {
   },
 } : {}
 
+const bindAttr = (rnStyle: any, webClass: string) => (isRN ? { style: rnStyle } : { className: webClass });
+
 export default function Mine() {
   useLoad(() => {
     console.log('Page loaded.')
@@ -133,11 +135,15 @@ export default function Mine() {
     // TODO: 处理菜单点击事件
   }
 
+  const pageProps = bindAttr(styles.page, 'page')
+  const userSectionProps = bindAttr(styles.userSection, 'user-section')
+  const userCardProps = bindAttr(styles.userCard, 'user-card')
+
   return (
-    <View className={isRN ? '' : 'page'} style={isRN ? styles.page : {}}>
+    <View {...pageProps}>
       {/* 顶部用户信息区域 */}
-      <View className={isRN ? '' : 'user-section'} style={isRN ? styles.userSection : {}}>
-        <View className={isRN ? '' : 'user-card'} style={isRN ? styles.userCard : {}}>
+      <View {...userSectionProps}>
+        <View {...userCardProps}>
           {/* 左侧头像 */}
           <Image 
             src={userInfo.avatar}

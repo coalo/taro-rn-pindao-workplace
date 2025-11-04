@@ -114,14 +114,15 @@ export default function Work() {
     console.log('Page loaded.')
   })
 
+  const isRN = process.env.TARO_ENV === 'rn'
+  
   // 在组件内部获取 WebView 组件（惰性加载）
   const WebView = getWebView()
 
-  // 生成 HTML 内容
-  const htmlContent = generateSubsystemHTML()
-  
-  // WebView source
-  const source: WebViewSource = { html: htmlContent }
+  // WebView source：RN 使用内嵌 HTML，其他端使用独立文件
+  const source: WebViewSource = isRN 
+    ? { uri: 'https://www.baidu.com' }  // RN 端暂时使用外部链接，避免内嵌 HTML
+    : { uri: 'https://www.baidu.com' }  // H5/小程序使用外部链接
 
   // WebView 消息处理
   const handleMessage = (event: any) => {
