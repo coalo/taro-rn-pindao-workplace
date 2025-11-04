@@ -1,49 +1,11 @@
 import { request } from './request'
-
-/**
- * 登录参数
- */
-export interface LoginParams {
-  /** 用户名 */
-  username: string
-  /** 密码 */
-  password: string
-}
-
-/**
- * 登录响应
- */
-export interface LoginResponse {
-  /** 访问令牌 */
-  token: string
-  /** 刷新令牌 */
-  refreshToken?: string
-  /** 用户信息 */
-  userInfo: {
-    id: string
-    username: string
-    nickname: string
-    avatar?: string
-    email?: string
-    phone?: string
-  }
-}
-
-/**
- * 注册参数
- */
-export interface RegisterParams {
-  /** 用户名 */
-  username: string
-  /** 密码 */
-  password: string
-  /** 确认密码 */
-  confirmPassword: string
-  /** 邮箱（可选） */
-  email?: string
-  /** 手机号（可选） */
-  phone?: string
-}
+import type {
+  LoginParams,
+  LoginResponse,
+  RegisterParams,
+  VerifyCodeType,
+  ResetPasswordParams
+} from '../models/auth'
 
 /**
  * 用户登录
@@ -103,7 +65,7 @@ export async function refreshToken(refreshToken: string): Promise<{ token: strin
  * @param phone - 手机号
  * @param type - 验证码类型（login | register | reset）
  */
-export async function sendVerifyCode(phone: string, type: 'login' | 'register' | 'reset' = 'login'): Promise<void> {
+export async function sendVerifyCode(phone: string, type: VerifyCodeType = 'login'): Promise<void> {
   return request({
     url: '/api/auth/send-code',
     method: 'POST',
@@ -116,11 +78,7 @@ export async function sendVerifyCode(phone: string, type: 'login' | 'register' |
  * 
  * @param params - 重置密码参数
  */
-export async function resetPassword(params: {
-  phone: string
-  code: string
-  newPassword: string
-}): Promise<void> {
+export async function resetPassword(params: ResetPasswordParams): Promise<void> {
   return request({
     url: '/api/auth/reset-password',
     method: 'POST',
