@@ -4,7 +4,9 @@
  */
 
 import { View, Text } from '@tarojs/components'
-import './quick-start.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./quick-start.scss')
+}
 
 export default function QuickStartExample() {
   return (

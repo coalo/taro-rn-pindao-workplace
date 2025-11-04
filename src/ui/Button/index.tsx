@@ -1,7 +1,9 @@
 import React from 'react'
 import { Button as TaroButton } from '@tarojs/components'
 import { ButtonProps } from './types'
-import './style.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./style.scss')
+}
 
 const Button: React.FC<ButtonProps> = ({
   type = 'primary',
@@ -19,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
     <TaroButton
       className={buttonClass}
       disabled={disabled || loading}
-      onClick={onClick}
+      onClick={(e) => onClick?.(e as any)}
       {...restProps}
     >
       {loading ? 'Loading...' : children}

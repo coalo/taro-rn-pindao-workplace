@@ -2,7 +2,9 @@ import { Component, PropsWithChildren } from 'react'
 import { View, Text } from '@tarojs/components'
 import { ScrollView } from 'react-native'
 
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 
 export default class Index extends Component<PropsWithChildren> {
   state = {

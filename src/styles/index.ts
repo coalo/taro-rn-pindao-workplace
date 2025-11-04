@@ -7,3 +7,6 @@ export * from './tokens'
 
 // 默认导出
 export { default as tokens } from './tokens'
+
+// 原子类系统
+export { parseAtomicClasses, classNames } from './atomicClasses'

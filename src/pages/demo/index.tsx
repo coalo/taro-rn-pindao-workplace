@@ -158,6 +158,9 @@ export default function Demo() {
           <AdaptView className="pt-sm pb-md px-lg m-base" style={{ backgroundColor: '#fff', marginTop: 12 }}>
             <Text>支持方向类：pt-sm / pb-md / px-lg / m-base</Text>
           </AdaptView>
+          <AdaptView className="m-10" >
+            <Text>支</Text>
+          </AdaptView>
         </View>
       </Card>
 

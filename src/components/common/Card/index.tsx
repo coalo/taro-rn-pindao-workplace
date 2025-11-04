@@ -5,7 +5,9 @@
 
 import { View, Text } from '@tarojs/components'
 import { getPlatformStyle } from '../../../utils/platform'
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 
 interface CardProps {
   title?: string

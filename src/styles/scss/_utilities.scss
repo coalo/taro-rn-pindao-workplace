@@ -92,10 +92,10 @@
 .text-warning { color: $warning-color !important; }
 .text-error { color: $error-color !important; }
 .text-info { color: $info-color !important; }
-.text-base { color: $text-color !important; }
-.text-secondary { color: $text-color-secondary !important; }
-.text-tertiary { color: $text-color-tertiary !important; }
-.text-disabled { color: $text-color-disabled !important; }
+.text-base { color: $text-primary !important; }
+.text-secondary { color: $text-secondary !important; }
+.text-tertiary { color: $text-tertiary !important; }
+.text-disabled { color: $text-disabled !important; }
 .text-white { color: #ffffff !important; }
 
 // 字号
@@ -109,7 +109,7 @@
 
 // 字重
 .font-light { font-weight: $font-weight-light !important; }
-.font-normal { font-weight: $font-weight-normal !important; }
+.font-normal { font-weight: $font-weight-regular !important; }
 .font-medium { font-weight: $font-weight-medium !important; }
 .font-semibold { font-weight: $font-weight-semibold !important; }
 .font-bold { font-weight: $font-weight-bold !important; }
@@ -149,9 +149,9 @@
 
 // ==================== 背景工具类 ====================
 
-.bg-white { background-color: $bg-color !important; }
-.bg-secondary { background-color: $bg-color-secondary !important; }
-.bg-tertiary { background-color: $bg-color-tertiary !important; }
+.bg-white { background-color: $bg-card !important; }
+.bg-secondary { background-color: $bg-page !important; }
+.bg-tertiary { background-color: $bg-hover !important; }
 .bg-primary { background-color: $primary-color !important; }
 .bg-success { background-color: $success-color !important; }
 .bg-warning { background-color: $warning-color !important; }
@@ -159,22 +159,22 @@
 
 // ==================== 边框工具类 ====================
 
-.border { border: $border-width-base solid $border-color !important; }
-.border-t { border-top: $border-width-base solid $border-color !important; }
-.border-b { border-bottom: $border-width-base solid $border-color !important; }
-.border-l { border-left: $border-width-base solid $border-color !important; }
-.border-r { border-right: $border-width-base solid $border-color !important; }
+.border { border: $border-width-base solid $border-medium !important; }
+.border-t { border-top: $border-width-base solid $border-medium !important; }
+.border-b { border-bottom: $border-width-base solid $border-medium !important; }
+.border-l { border-left: $border-width-base solid $border-medium !important; }
+.border-r { border-right: $border-width-base solid $border-medium !important; }
 .border-0 { border: none !important; }
 
 // 圆角
 .rounded-0 { border-radius: 0 !important; }
-.rounded-xs { border-radius: $border-radius-xs !important; }
-.rounded-sm { border-radius: $border-radius-sm !important; }
-.rounded-base { border-radius: $border-radius-base !important; }
-.rounded-md { border-radius: $border-radius-md !important; }
-.rounded-lg { border-radius: $border-radius-lg !important; }
-.rounded-xl { border-radius: $border-radius-xl !important; }
-.rounded-full { border-radius: $border-radius-circle !important; }
+.rounded-xs { border-radius: $radius-xs !important; }
+.rounded-sm { border-radius: $radius-sm !important; }
+.rounded-base { border-radius: $radius-base !important; }
+.rounded-md { border-radius: $radius-md !important; }
+.rounded-lg { border-radius: $radius-lg !important; }
+.rounded-xl { border-radius: $radius-xl !important; }
+.rounded-full { border-radius: $radius-circle !important; }
 
 // ==================== 阴影工具类 ====================
 
@@ -221,3 +221,80 @@
 .h-full { height: 100% !important; }
 .w-screen { width: 100vw !important; }
 .h-screen { height: 100vh !important; }
+
+// ==================== 数字间距工具类 ====================
+// 生成 0-100 的间距类（步进 2px）
+// padding: p-10, p-12, p-14...
+@for $i from 0 through 50 {
+  $value: $i * 2;
+  .p-#{$value} { padding: #{$value}px !important; }
+  .pt-#{$value} { padding-top: #{$value}px !important; }
+  .pr-#{$value} { padding-right: #{$value}px !important; }
+  .pb-#{$value} { padding-bottom: #{$value}px !important; }
+  .pl-#{$value} { padding-left: #{$value}px !important; }
+  .px-#{$value} {
+    padding-left: #{$value}px !important;
+    padding-right: #{$value}px !important;
+  }
+  .py-#{$value} {
+    padding-top: #{$value}px !important;
+    padding-bottom: #{$value}px !important;
+  }
+  
+  // 横线分隔写法: p-t-10, p-r-10, p-b-10, p-l-10
+  .p-t-#{$value} { padding-top: #{$value}px !important; }
+  .p-r-#{$value} { padding-right: #{$value}px !important; }
+  .p-b-#{$value} { padding-bottom: #{$value}px !important; }
+  .p-l-#{$value} { padding-left: #{$value}px !important; }
+  .p-x-#{$value} {
+    padding-left: #{$value}px !important;
+    padding-right: #{$value}px !important;
+  }
+  .p-y-#{$value} {
+    padding-top: #{$value}px !important;
+    padding-bottom: #{$value}px !important;
+  }
+  
+  // margin: m-10, m-12, m-14...
+  .m-#{$value} { margin: #{$value}px !important; }
+  .mt-#{$value} { margin-top: #{$value}px !important; }
+  .mr-#{$value} { margin-right: #{$value}px !important; }
+  .mb-#{$value} { margin-bottom: #{$value}px !important; }
+  .ml-#{$value} { margin-left: #{$value}px !important; }
+  .mx-#{$value} {
+    margin-left: #{$value}px !important;
+    margin-right: #{$value}px !important;
+  }
+  .my-#{$value} {
+    margin-top: #{$value}px !important;
+    margin-bottom: #{$value}px !important;
+  }
+  
+  // 横线分隔写法: m-t-10, m-r-10, m-b-10, m-l-10
+  .m-t-#{$value} { margin-top: #{$value}px !important; }
+  .m-r-#{$value} { margin-right: #{$value}px !important; }
+  .m-b-#{$value} { margin-bottom: #{$value}px !important; }
+  .m-l-#{$value} { margin-left: #{$value}px !important; }
+  .m-x-#{$value} {
+    margin-left: #{$value}px !important;
+    margin-right: #{$value}px !important;
+  }
+  .m-y-#{$value} {
+    margin-top: #{$value}px !important;
+    margin-bottom: #{$value}px !important;
+  }
+}
+
+// ==================== 数字圆角工具类 ====================
+// 生成 0-50 的圆角类（步进 2px）
+// rounded-4, rounded-6, rounded-8...
+@for $i from 0 through 25 {
+  $value: $i * 2;
+  .rounded-#{$value} { border-radius: #{$value}px !important; }
+}
+
+// ==================== 数字字体工具类 ====================
+// 生成常用字号 10-32
+@for $i from 10 through 32 {
+  .font-#{$i} { font-size: #{$i}px !important; }
+}

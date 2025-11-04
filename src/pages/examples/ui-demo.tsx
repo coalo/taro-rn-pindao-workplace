@@ -1,7 +1,9 @@
 import React from 'react'
 import { View, Text } from '@tarojs/components'
 import { Button } from '@/ui'
-import './ui-demo.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./ui-demo.scss')
+}
 
 const UIDemo: React.FC = () => {
   return (

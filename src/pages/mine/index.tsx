@@ -1,6 +1,8 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 
 // 在 RN 环境下使用 StyleSheet
 const isRN = process.env.TARO_ENV === 'rn'

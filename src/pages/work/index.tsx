@@ -2,7 +2,9 @@ import { View } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
 import { getWebView, adaptWebViewProps, getMessageData, WebViewSource } from '../../utils/webview'
 import { safeJSONParse } from '../../utils'
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 
 // 子系统数据接口
 interface SubsystemItem {

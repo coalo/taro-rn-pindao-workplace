@@ -2,7 +2,9 @@ import { Component, PropsWithChildren } from 'react'
 import { Provider } from 'react-redux'
 import { useLaunch } from '@tarojs/taro'
 import { store } from './store'
-import './app.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./app.scss')
+}
 
 function App(props: PropsWithChildren) {
   useLaunch(() => {
