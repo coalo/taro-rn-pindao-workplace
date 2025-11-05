@@ -1,9 +1,64 @@
 /**
- * pkgBasics 包路径映射
+ * 分包路由路径映射文件 - pkgBasics
+ * 从原生小程序完整迁移
  */
+
 const pathMap = {
-  basicsHome: '/pkgBasics/pages/home/index',
-  basicsCoupon: '/pkgBasics/pages/coupon/index'
+  couponAreaSelect: '/pkgBasics/pages/store/areaSelect/areaSelect',
+  couponStoreList: '/pkgBasics/pages/store/storeList/storeList',
+  couponStoreSearch: '/pkgBasics/pages/store/storeSearch/storeSearch',
+  comment: '/pkgBasics/pages/after-sales/comment/comment',
+  memberNews: '/pkgBasics/pages/memberNews/memberNews',
+  logout: '/pkgBasics/pages/logout/logout',
+  quit: '/pkgBasics/pages/quit/quit',
+  memberManage: '/pkgBasics/pages/memberManage/memberManage',
+  invoice: '/pkgBasics/pages/after-sales/invoice/invoice',
+  createRefund: '/pkgBasics/pages/after-sales/refund/refund',
+  refundDetail: '/pkgBasics/pages/after-sales/refundDetail/refundDetail',
+  deliverySchedule: '/pkgBasics/pages/delivery-schedule/deliverySchedule',
+  couponPackageRecord: '/pkgBasics/pages/coupon-package/record',
+  externalCouponsList: '/pkgBasics/pages/external-coupons/list/list',
+  externalCouponsDetail: '/pkgBasics/pages/external-coupons/detail/detail',
+  moreService: '/pkgBasics/pages/moreService/moreService',
+  helpCenter: '/pkgBasics/pages/helpCenter/helpCenter',
+  pkgSignInReminder: '/pkgBasics/pages/signInReminder/signInReminder',
+  pkgSeckillReminder: '/pkgBasics/pages/seckillReminder/seckillReminder',
+  pkgCouponTemplate: '/pkgBasics/pages/couponTemplate/couponTemplate',
+  pkgInvoiceIndex: '/pkgBasics/pages/invoice/index/index',
+  pkgInvoiceList: '/pkgBasics/pages/invoice/list/list',
+  pkgInvoiceSubmit: '/pkgBasics/pages/invoice/submit/submit',
+  pkgInvoiceHistory: '/pkgBasics/pages/invoice/history/history',
+  pkgInvoiceDetails: '/pkgBasics/pages/invoice/details/details',
+  pkgInvoiceHeader: '/pkgBasics/pages/invoice/header/header',
+  pkgInvoiceHeaderInfo: '/pkgBasics/pages/invoice/headerInfo/headerInfo',
+  pkgInvoiceResult: '/pkgBasics/pages/invoice/result/result',
+  pkgInvoiceOrders: '/pkgBasics/pages/invoice/orders/orders',
+  pkgInvoicePreview: '/pkgBasics/pages/invoice/invoicePreview/invoicePreview',
+  pkgOffLinePayment: '/pkgBasics/pages/offLinePayment/offLinePayment',
+  historyCard: '/pkgBasics/pages/coupon/history/history',
+  memberRecord: '/pkgBasics/pages/member/record/record',
+  memberCode: '/pkgBasics/pages/member/code/code',
+  userInfo: '/pkgBasics/pages/userInfo/userInfo',
+  userProfile: '/pkgBasics/pages/userProfile/userProfile',
+  sharesCenter: '/pkgBasics/pages/sharesCenter/index',
+  addressList: '/pkgBasics/pages/address/addressList/addressList',
+  addressDetail: '/pkgBasics/pages/address/addressDetail/addressDetail',
+  selectAddress: '/pkgBasics/pages/address/selectAddress/selectAddress',
+  thirdRightsInfo: '/pkgBasics/pages/coupon/thirdRightsInfo/thirdRightsInfo',
+  cardDetail: '/pkgBasics/pages/giftcard/cardDetail/cardDetail',
+  getRecord: '/pkgBasics/pages/giftcard/getRecord/getRecord',
+  giftCard: '/pkgBasics/pages/giftcard/giftCard/giftCard',
+  giftRecord: '/pkgBasics/pages/giftcard/giftRecord/giftRecord',
+  historyRecord: '/pkgBasics/pages/giftcard/historyRecord/historyRecord',
+  cardProduct: '/pkgBasics/pages/giftcard/cardProduct/cardProduct',
+  cardStore: '/pkgBasics/pages/giftcard/cardStore/cardStore',
+  basicGiftCardIndex: '/pkgBasics/pages/giftcard/card/index',
+  basicGiftCardList: '/pkgBasics/pages/giftcard/list/index',
+  basicGiftCardShare: '/pkgBasics/pages/giftcard/sharecard/index',
+  questionSurvey: '/pkgBasics/pages/questionSurvey/questionSurvey',
+  basicsCoupon: '/pkgBasics/pages/coupon/list/list',
+  basicsCouponNew: '/pkgBasics/pages/coupon/listNew/listNew',
+  basicsParadise: '/pkgBasics/pages/paradise/index'
 }
 
 export default pathMap

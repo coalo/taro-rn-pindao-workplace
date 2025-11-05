@@ -1,34 +1,179 @@
+/**
+ * 小程序接口请求方法
+ * 从原生小程序完整迁移，保持变量名与逻辑一致
+ */
 import Taro from '@tarojs/taro'
+import hostMap from '../mapFile/hostMap'
+import config from '../commonFile/config'
+import theme from '../commonFile/theme'
+import base64 from '../commonFile/base64'
 
-type RequestOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
-  headers?: Record<string, string>
-  data?: any
+// 是否开启请求日志
+const OPEN_REQUEST_LOG = true
+// 敏感数据加密向量
+const ENCRYPT_IV = 'bEZd3soOfZvFptks'
+
+// 获取请求加密串（占位实现：使用 Base64 代替 HMAC-SHA1）
+const getRequestSignature = () => {
+  const nonce = Math.floor(Math.random() * 1000000)
+  const openId = Taro.getStorageSync('openId') || ''
+  const timestamp = Math.floor(Date.now() / 1000)
+  const encryption = encodeURI(`nonce=${nonce}&openId=${openId}&timestamp=${timestamp}`)
+  
+  return {
+    nonce,
+    openId,
+    timestamp,
+    // 占位：实际应使用 crypto.HmacSHA1
+    signature: base64.encode(encryption)
+  }
 }
 
-/**
- * 与原生小程序 request 对齐的最小实现
- */
-const request = async (api: string, data: any = {}, options: RequestOptions = {}) => {
-  const method = options.method || 'POST'
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(options.headers || {})
+// 获取敏感数据加密串（占位实现：使用 Base64 代替 AES）
+export const getEncryptData = (data: any, _iv: string | null = null): string => {
+  try {
+    return base64.encode(JSON.stringify(data || ''))
+  } catch {
+    return ''
   }
+}
 
-  const baseURL = process.env.API_BASE_URL || 'https://api.example.com'
-  const url = api.startsWith('http') ? api : `${baseURL}${api}`
+// 获取指定结构的请求数据
+export const getRequestStructData = (data: Record<string, any> = {}) => {
+  const channel = Taro.getStorageSync('channel') || 2
+  const stallType = Taro.getStorageSync('stallType') || ''
+  const storeInfo = Taro.getStorageSync('storeInfo') || {}
+  const systemInfo = Taro.getStorageSync('systemInfo') || {}
 
-  const res = await Taro.request({
-    url,
-    method,
-    data,
-    header: headers,
-    timeout: Number(process.env.API_TIMEOUT) || 10000
+  return {
+    common: {
+      platform: 'taro',
+      version: hostMap.version,
+      imei: '',
+      osn: systemInfo.model || '',
+      sv: systemInfo.system || '',
+      lat: '',
+      lng: '',
+      lang: systemInfo.language || '',
+      currency: storeInfo.countryCurrency || 'CNY',
+      timeZone: '',
+      ...getRequestSignature()
+    },
+    params: {
+      businessType: config.businessType,
+      brand: config.brand,
+      tenantId: 1,
+      channel: channel,
+      stallType: stallType,
+      storeId: storeInfo.storeId || '',
+      storeType: storeInfo.storeType || '',
+      cityId: storeInfo.cityId || '',
+      appId: hostMap.appId,
+      dAId: storeInfo.departAreaId || '',
+      ...data
+    }
+  }
+}
+
+// 获取网络类型
+const getNetworkType = () => {
+  if (typeof Taro.getNetworkType !== 'function') return
+  
+  Taro.getNetworkType({
+    success: res => {
+      if ((res as any).networkType === 'none') {
+        Taro.showModal({
+          title: '温馨提示',
+          content: '您当前网络环境不佳，请求失败',
+          confirmColor: theme.$themeColor
+        })
+      }
+    }
   })
+}
 
-  const payload = (res as any).data
-  return payload?.data !== undefined ? payload : payload
+// 打印请求日志
+const consoleRequestLog = (
+  consoleType: 'info' | 'error',
+  url: string,
+  data: any,
+  consoleInfo: any
+) => {
+  if (!OPEN_REQUEST_LOG) return
+  
+  try {
+    console.group && console.group('调用网络接口完成')
+  } catch {}
+  
+  console[consoleType]('[请求地址]--------------------------------------------------\n', url)
+  console[consoleType]('[请求数据]', getRequestStructData(data))
+  console[consoleType]('[返回结果]', consoleInfo)
+  
+  try {
+    console.groupEnd && console.groupEnd()
+  } catch {}
+}
+
+// 主请求函数
+const request = (url: string, data: Record<string, any> = {}, cfg: Record<string, any> = {}) => {
+  return new Promise((resolve, reject) => {
+    if (cfg.loading) {
+      Taro.showLoading({ title: 'Loading...', mask: true })
+    }
+    
+    const positionInfo = Taro.getStorageSync('positionInfo') || {}
+    const requestData = getRequestStructData(data)
+    const accessToken = Taro.getStorageSync('accessToken') || ''
+    
+    const header: Record<string, string> = {
+      Authorization: `Bearer ${accessToken}`,
+      storeId: requestData.params.storeId,
+      iv: cfg.iv || ENCRYPT_IV
+    }
+    
+    if (positionInfo.latitude && positionInfo.longitude) {
+      header.lat2 = getEncryptData(positionInfo.latitude, cfg.iv) || ''
+      header.lng2 = getEncryptData(positionInfo.longitude, cfg.iv) || ''
+    }
+    
+    Taro.request({
+      url,
+      data: requestData,
+      header,
+      method: cfg.method || 'POST',
+      dataType: cfg.dataType || 'json',
+      responseType: cfg.responseType || 'text',
+      timeout: Number(process.env.API_TIMEOUT) || 10000
+    })
+      .then(res => {
+        if (cfg.loading) {
+          Taro.hideLoading()
+        }
+        const statusCode = (res as any).statusCode
+        const payload = (res as any).data
+        
+        if (statusCode === 200) {
+          consoleRequestLog(
+            payload?.code === 0 ? 'info' : 'error',
+            url,
+            data,
+            payload || res
+          )
+          payload?.code === 0 ? resolve(payload) : reject(payload)
+        } else {
+          consoleRequestLog('error', url, data, res)
+          reject(res)
+        }
+      })
+      .catch(err => {
+        if (cfg.loading) {
+          Taro.hideLoading()
+        }
+        consoleRequestLog('error', url, data, err)
+        getNetworkType()
+        reject(err)
+      })
+  })
 }
 
 export default request

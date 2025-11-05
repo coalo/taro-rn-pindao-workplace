@@ -1,9 +1,65 @@
 /**
- * pkgMarket 包路径映射
+ * 分包路由路径映射文件 - pkgMarket
+ * 从原生小程序完整迁移
  */
+
 const pathMap = {
-  marketShelves: '/pkgMarket/pages/shelves/index',
-  marketEquity: '/pkgMarket/pages/equity/detail'
+  shelves: '/pkgMarket/pages/shelves/shelves',
+  shelvesTakefood: '/pkgMarket/pages/shelves/takefood/takefood',
+  couponShelves: '/pkgMarket/pages/couponShelves/couponShelves',
+  activeShelves: '/pkgMarket/pages/activeShelves/activeShelves',
+  vote: '/pkgMarket/pages/vote/vote',
+  voteResult: '/pkgMarket/pages/voteResult/voteResult',
+  invitation: '/pkgMarket/pages/invite-gift/share/index',
+  saveImage: '/pkgMarket/pages/invite-gift/saveImage/saveImage',
+  anniversary: '/pkgMarket/pages/invite-gift/invite/index',
+  inviteSaveImage: '/pkgMarket/pages/invite-gift/inviteSaveImage/inviteSaveImage',
+  firstOrderPage: '/pkgMarket/pages/firstOrderPage/firstOrderPage',
+  inviteRecords: '/pkgMarket/pages/invite-gift/inviteRecords/inviteRecords',
+  collectCup: '/pkgMarket/pages/collectCup/collectCup',
+  previousRecords: '/pkgMarket/pages/invite-gift/previousRecords/previousRecords',
+  studentAttestation: '/pkgMarket/pages/student/attestation/attestation',
+  studentInvitation: '/pkgMarket/pages/student/invitation/invitation',
+  authentication: '/pkgMarket/pages/student/authentication/authentication',
+  sevenAnniversary: '/pkgMarket/pages/sevenAnniversary/sevenAnniversary',
+  recipientAddress: '/pkgMarket/pages/sevenAnniversary/recipientAddress/recipientAddress',
+  couponPackageDetail: '/pkgMarket/pages/couponPackage/detail/detail',
+  activationFailure: '/pkgMarket/pages/couponPackage/activationFailure/activationFailure',
+  sendReceive: '/pkgMarket/pages/couponPackage/sendReceive/sendReceive',
+  couponReceive: '/pkgMarket/pages/couponPackage/couponReceive/couponReceive',
+  giveCouponPackage: '/pkgMarket/pages/couponPackage/give/give',
+  receiveCouponPackage: '/pkgMarket/pages/couponPackage/receive/receive',
+  celebrateCouponPackage: '/pkgMarket/pages/couponPackage/celebrate/celebrate',
+  marketCouponPackageList: '/pkgMarket/pages/couponPackage/list/list',
+  bankOffers: '/pkgMarket/pages/bankOffers/bankOffers',
+  bankActivityDetail: '/pkgMarket/pages/bankOffers/detail/detail',
+  pkgPieceResult: '/pkgMarket/pages/pieceResult/pieceResult',
+  eightAnniversary: '/pkgMarket/pages/eightAnniversary/answer/answer',
+  answerRecords: '/pkgMarket/pages/eightAnniversary/answer/inviteRecords/inviteRecords',
+  historyRecords: '/pkgMarket/pages/eightAnniversary/answer/historyRecords/historyRecords',
+  changeRecords: '/pkgMarket/pages/eightAnniversary/answer/changeRecords/changeRecords',
+  activeRule: '/pkgMarket/pages/eightAnniversary/activeRule/activeRule',
+  eightAward: '/pkgMarket/pages/eightAnniversary/award/award',
+  eightBallot: '/pkgMarket/pages/eightAnniversary/ballot/ballot',
+  eightRaffle: '/pkgMarket/pages/eightAnniversary/raffle/raffle',
+  birthPrivilege: '/pkgMarket/pages/birthPrivilege/birthPrivilege',
+  jointlyRecharge: '/pkgMarket/pages/jointly/recharge/recharge',
+  jointlyAreaSelect: '/pkgMarket/pages/jointly/store/areaSelect/areaSelect',
+  jointlyStoreList: '/pkgMarket/pages/jointly/store/storeList/storeList',
+  pwdExchange: '/pkgMarket/pages/pwdExchange/pwdExchange',
+  testAward: '/pkgMarket/pages/personalityTest/award/award',
+  testHistory: '/pkgMarket/pages/personalityTest/history/history',
+  testRecord: '/pkgMarket/pages/personalityTest/record/record',
+  testReport: '/pkgMarket/pages/personalityTest/report/report',
+  cardCollect: '/pkgMarket/pages/cardCollect/cardCollect',
+  cardInviteRecords: '/pkgMarket/pages/cardCollect/inviteRecords/inviteRecords',
+  unLockpointsDetail: '/pkgMarket/pages/cardCollect/pointsDetail/pointsDetail',
+  personalityTest: '/pkgMarket/pages/personalityTest/personalityTest',
+  testQuestion: '/pkgMarket/pages/personalityTest/testQuestion/testQuestion',
+  inviteGift: '/pkgMarket/pages/inviteGift/inviteGift',
+  equityCard: '/pkgMarket/pages/equityCard/equityCard',
+  equityCardDetail: '/pkgMarket/pages/equityCard/equityCardDetail/equityCardDetail',
+  niceCard: '/pkgMarket/pages/niceCard/niceCard'
 }
 
 export default pathMap
