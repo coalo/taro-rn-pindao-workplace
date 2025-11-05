@@ -1,8 +1,8 @@
 {
   "miniprogramRoot": "./dist",
-  "projectname": "rn-test",
-  "description": "基于rn模版的taro项目",
-  "appid": "touristappid",
+  "projectname": "奈雪点单-微信小程序-taro",
+  "description": "奈雪点单-微信小程序-taro",
+  "appid": "wx4b8969f0e4f3e85b",
   "setting": {
     "urlCheck": true,
     "es6": false,
