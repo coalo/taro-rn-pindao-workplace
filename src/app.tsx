@@ -1,6 +1,6 @@
 import { Component, PropsWithChildren } from 'react'
 import { Provider } from 'react-redux'
-import { useLaunch } from '@tarojs/taro'
+import Taro, { useLaunch } from '@tarojs/taro'
 import { store } from './store'
 if (process.env.TARO_ENV !== 'rn') {
   require('./app.scss')
@@ -9,6 +9,7 @@ if (process.env.TARO_ENV !== 'rn') {
 function App(props: PropsWithChildren) {
   useLaunch(() => {
     console.log('App launched.')
+    Taro.switchTab({ url: '/pages/task/index' })
   })
 
   // this.props.children 是将要会渲染的页面
