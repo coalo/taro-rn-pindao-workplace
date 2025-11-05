@@ -25,7 +25,7 @@ class DataSync {
       }
       
       ;(Taro as any).login({
-        success: (res: any) => {
+        success: async (res: any) => {
           if (!res.code) {
             resolve({})
             return
@@ -37,229 +37,195 @@ class DataSync {
             ...tools.getScanCode()
           }
           
-          request(apiMap.loginVerify, data)
-            .then((res: any) => {
-              Taro.setStorageSync('accessToken', res.data.accessToken || '')
-              Taro.setStorageSync('openId', res.data.openId || '')
-              Taro.setStorageSync('unionId', res.data.unionId || '')
-              resolve(res)
+          try {
+            const result: any = await request(apiMap.loginVerify, data)
+            await Taro.setStorage({ key: 'accessToken', data: result.data.accessToken || '' })
+            await Taro.setStorage({ key: 'openId', data: result.data.openId || '' })
+            await Taro.setStorage({ key: 'unionId', data: result.data.unionId || '' })
+            resolve(result)
+          } catch (err: any) {
+            Taro.showToast({
+              icon: 'none',
+              title: err.message || '请求错误'
             })
-            .catch((err: any) => {
-              Taro.showToast({
-                icon: 'none',
-                title: err.message || '请求错误'
-              })
-              resolve(res)
-            })
+            resolve(res)
+          }
         }
       })
     })
   }
 
   // 更新 accessToken 信息
-  updateAccessToken(accessToken: string = '') {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('accessToken', accessToken)
-      resolve(undefined)
-    })
+  async updateAccessToken(accessToken: string = '') {
+    await Taro.setStorage({ key: 'accessToken', data: accessToken })
+    return Promise.resolve(undefined)
   }
 
   // 清除 accessToken 信息
-  cleanAccessToken() {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('accessToken', '')
-      Taro.setStorageSync('hasSilentLogin', false)
+  async cleanAccessToken() {
+    await Taro.setStorage({ key: 'accessToken', data: '' })
+    await Taro.setStorage({ key: 'hasSilentLogin', data: false })
 
-      try {
-        ;(sensors as any).logout && (sensors as any).logout()
-        ;(sensors as any).resetAnonymousIdentity && (sensors as any).resetAnonymousIdentity()
-      } catch {}
+    try {
+      ;(sensors as any).logout && (sensors as any).logout()
+      ;(sensors as any).resetAnonymousIdentity && (sensors as any).resetAnonymousIdentity()
+    } catch {}
 
-      resolve(undefined)
-    })
+    return Promise.resolve(undefined)
   }
 
   // 更新购买渠道
-  updateChannel(channel: number = 2) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('channel', channel)
-      sensors.settingOrderForm && sensors.settingOrderForm()
-      resolve(undefined)
-    })
+  async updateChannel(channel: number = 2) {
+    await Taro.setStorage({ key: 'channel', data: channel })
+    sensors.settingOrderForm && sensors.settingOrderForm()
+    return Promise.resolve(undefined)
   }
 
   // 更新档口信息
-  updateStallInfo(stallType?: string) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('stallType', stallType || '')
-      resolve(undefined)
-    })
+  async updateStallInfo(stallType?: string) {
+    await Taro.setStorage({ key: 'stallType', data: stallType || '' })
+    return Promise.resolve(undefined)
   }
 
   // 同步用户信息
-  syncUserInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getUserInfo, {})
-        .then((res: any) => {
-          Taro.setStorageSync('userInfo', res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+  async syncUserInfo() {
+    try {
+      const res: any = await request(apiMap.getUserInfo, {})
+      await Taro.setStorage({ key: 'userInfo', data: res.data })
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 更新用户信息
-  updateUserInfo(userInfo: Record<string, any>) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('userInfo', userInfo)
-      resolve(undefined)
-    })
+  async updateUserInfo(userInfo: Record<string, any>) {
+    await Taro.setStorage({ key: 'userInfo', data: userInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步通用配置信息
-  syncConfigInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getCommonConfig, {})
-        .then((res: any) => {
-          const data = res.data || {}
-          const configInfo = {
-            loadingImage: data.loadingImage || '/images/loading.gif',
-            currency: '¥'
-          }
-          Taro.setStorageSync('loadingImage', data.loadingImage)
-          Taro.setStorageSync('configInfo', configInfo)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          const fallback = {
-            loadingImage: '/images/loading.gif',
-            currency: '¥'
-          }
-          Taro.setStorageSync('configInfo', fallback)
-          reject(err)
-        })
-    })
+  async syncConfigInfo() {
+    try {
+      const res: any = await request(apiMap.getCommonConfig, {})
+      const data = res.data || {}
+      const configInfo = {
+        loadingImage: data.loadingImage || '/images/loading.gif',
+        currency: '¥'
+      }
+      await Taro.setStorage({ key: 'loadingImage', data: data.loadingImage })
+      await Taro.setStorage({ key: 'configInfo', data: configInfo })
+      return res
+    } catch (err: any) {
+      const fallback = {
+        loadingImage: '/images/loading.gif',
+        currency: '¥'
+      }
+      await Taro.setStorage({ key: 'configInfo', data: fallback })
+      throw err
+    }
   }
 
   // 同步分享信息
-  syncShareInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getShareConfig, {})
-        .then((res: any) => {
-          const data = res.data || {}
-          const shareInfo = {
-            home: data.home || {},
-            menu: data.menu || {},
-            order: data.order || {}
-          }
-          Taro.setStorageSync('shareInfo', shareInfo)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.setStorageSync('shareInfo', { home: {}, menu: {}, order: {} })
-          reject(err)
-        })
-    })
+  async syncShareInfo() {
+    try {
+      const res: any = await request(apiMap.getShareConfig, {})
+      const data = res.data || {}
+      const shareInfo = {
+        home: data.home || {},
+        menu: data.menu || {},
+        order: data.order || {}
+      }
+      await Taro.setStorage({ key: 'shareInfo', data: shareInfo })
+      return res
+    } catch (err: any) {
+      await Taro.setStorage({ key: 'shareInfo', data: { home: {}, menu: {}, order: {} } })
+      throw err
+    }
   }
 
   // 同步用户分组信息
-  syncStrategyInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getStrategyInfo, {})
-        .then((res: any) => {
-          Taro.setStorageSync('strategyInfo', res.data.strategyInfo || '')
-          resolve(res)
-        })
-        .catch((err: any) => {
-          reject(err)
-        })
-    })
+  async syncStrategyInfo() {
+    try {
+      const res: any = await request(apiMap.getStrategyInfo, {})
+      await Taro.setStorage({ key: 'strategyInfo', data: res.data.strategyInfo || '' })
+      return res
+    } catch (err: any) {
+      throw err
+    }
   }
 
   // 神策 AB 实验
-  syncShenceABApi() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getABApi, { abNames: ['coupon_use', 'jjg', 'item_list'] })
-        .then((res: any) => {
-          Taro.setStorageSync('strategyGroup', res.data || {})
-          resolve(res)
-        })
-        .catch((err: any) => {
-          reject(err)
-        })
-    })
+  async syncShenceABApi() {
+    try {
+      const res: any = await request(apiMap.getABApi, { abNames: ['coupon_use', 'jjg', 'item_list'] })
+      await Taro.setStorage({ key: 'strategyGroup', data: res.data || {} })
+      return res
+    } catch (err: any) {
+      throw err
+    }
   }
 
   // 同步用户协议信息
-  syncAgreementInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.getProtocols, {})
-        .then((res: any) => {
-          Taro.setStorageSync('agreementInfo', res.data.rules || [])
-          resolve(res)
-        })
-        .catch((err: any) => {
-          reject(err)
-        })
-    })
+  async syncAgreementInfo() {
+    try {
+      const res: any = await request(apiMap.getProtocols, {})
+      await Taro.setStorage({ key: 'agreementInfo', data: res.data.rules || [] })
+      return res
+    } catch (err: any) {
+      throw err
+    }
   }
 
   // 更新地址信息
-  updateAddressInfo(addressInfo: Record<string, any> = {}) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('addressInfo', addressInfo)
-      resolve(undefined)
-    })
+  async updateAddressInfo(addressInfo: Record<string, any> = {}) {
+    await Taro.setStorage({ key: 'addressInfo', data: addressInfo })
+    return Promise.resolve(undefined)
   }
 
   // 更新店铺信息
-  updateStoreInfo(storeInfo: Record<string, any> = {}, silentSelectStore: boolean = false) {
-    return new Promise((resolve) => {
-      if (!silentSelectStore) {
-        Taro.setStorageSync('hasSelectStore', true)
-      }
-      Taro.setStorageSync('storeInfo', storeInfo)
-      
-      const configInfo = Taro.getStorageSync('configInfo') || {}
-      configInfo.currency = storeInfo.countryCurrencyTag
-      Taro.setStorageSync('configInfo', configInfo)
+  async updateStoreInfo(storeInfo: Record<string, any> = {}, silentSelectStore: boolean = false) {
+    if (!silentSelectStore) {
+      await Taro.setStorage({ key: 'hasSelectStore', data: true })
+    }
+    await Taro.setStorage({ key: 'storeInfo', data: storeInfo })
+    
+    const configInfo = Taro.getStorageSync('configInfo') || {}
+    configInfo.currency = storeInfo.countryCurrencyTag
+    await Taro.setStorage({ key: 'configInfo', data: configInfo })
 
+    sensors.registerApp &&
+      sensors.registerApp({
+        store_id: () => {
+          return storeInfo.storeId
+        }
+      })
+
+    try {
+      await this.syncShenceABApi()
+      const strategyGroup = Taro.getStorageSync('strategyGroup') || {}
       sensors.registerApp &&
         sensors.registerApp({
-          store_id: () => {
-            return storeInfo.storeId
+          abTest: () => {
+            return (
+              (strategyGroup &&
+                strategyGroup.coupon_use &&
+                strategyGroup.coupon_use.strategyInfo) ||
+              'coupon1B'
+            )
+          },
+          abTests: () => {
+            return strategyGroup || []
           }
         })
-
-      try {
-        this.syncShenceABApi().then(() => {
-          const strategyGroup = Taro.getStorageSync('strategyGroup') || {}
-          sensors.registerApp &&
-            sensors.registerApp({
-              abTest: () => {
-                return (
-                  (strategyGroup &&
-                    strategyGroup.coupon_use &&
-                    strategyGroup.coupon_use.strategyInfo) ||
-                  'coupon1B'
-                )
-              },
-              abTests: () => {
-                return strategyGroup || []
-              }
-            })
-        })
-      } catch (error) {
-        console.log('----error: ', error)
-      }
-      resolve(undefined)
-    })
+    } catch (error) {
+      console.log('----error: ', error)
+    }
+    return Promise.resolve(undefined)
   }
 
   // 拼单购物车拼单状态异常提示 仅类内部调用
@@ -377,294 +343,243 @@ class DataSync {
   }
 
   // 同步普通购物车信息
-  syncNormalCart(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async syncNormalCart(data: Record<string, any> = {}) {
+    try {
       data = this.__normalCartCommonParams(data)
-      request(apiMap.findNormalCartInfo, { ...data })
-        .then((res: any) => {
-          Taro.setStorageSync('normalCartInfo', res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+      const res: any = await request(apiMap.findNormalCartInfo, { ...data })
+      await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 更新普通购物车信息
-  updateNormalCartInfo(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async updateNormalCartInfo(data: Record<string, any> = {}) {
+    try {
       data = this.__normalCartCommonParams(data)
-      request(apiMap.updateNormalCartInfo, data, { loading: true })
-        .then((res: any) => {
-          Taro.setStorageSync('normalCartInfo', res.data)
-          this.__cartMarketErrorHint(res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+      const res: any = await request(apiMap.updateNormalCartInfo, data, { loading: true })
+      await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
+      this.__cartMarketErrorHint(res.data)
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 修改普通购物车数量
-  updateNormalCartCount(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async updateNormalCartCount(data: Record<string, any> = {}) {
+    try {
       data = this.__normalCartCommonParams(data)
-      request(apiMap.updateNormalCartCount, { ...data }, { loading: true })
-        .then((res: any) => {
-          Taro.setStorageSync('normalCartInfo', res.data)
-          this.__cartMarketErrorHint(res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+      const res: any = await request(apiMap.updateNormalCartCount, { ...data }, { loading: true })
+      await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
+      this.__cartMarketErrorHint(res.data)
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 普通购物车列表商品勾选与取消
-  updateNormalCartSelect(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async updateNormalCartSelect(data: Record<string, any> = {}) {
+    try {
       data = this.__normalCartCommonParams(data)
-      request(apiMap.updateNormalCartSelect, { ...data }, { loading: true })
-        .then((res: any) => {
-          Taro.setStorageSync('normalCartInfo', res.data)
-          this.__cartMarketErrorHint(res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+      const res: any = await request(apiMap.updateNormalCartSelect, { ...data }, { loading: true })
+      await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
+      this.__cartMarketErrorHint(res.data)
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 清空普通购物车信息
-  cleanNormalCartInfo() {
-    return new Promise((resolve, reject) => {
-      request(apiMap.cleanNormalCartInfo, { cartType: 1 })
-        .then((res: any) => {
-          Taro.setStorageSync('normalCartInfo', {})
-          resolve(res)
-        })
-        .catch((err: any) => {
-          Taro.showToast({
-            icon: 'none',
-            title: err.message || '请求错误'
-          })
-          reject(err)
-        })
-    })
+  async cleanNormalCartInfo() {
+    try {
+      const res: any = await request(apiMap.cleanNormalCartInfo, { cartType: 1 })
+      await Taro.setStorage({ key: 'normalCartInfo', data: {} })
+      return res
+    } catch (err: any) {
+      Taro.showToast({
+        icon: 'none',
+        title: err.message || '请求错误'
+      })
+      throw err
+    }
   }
 
   // 同步拼单购物车信息
-  syncPieceCart(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async syncPieceCart(data: Record<string, any> = {}) {
+    try {
       data = this.__pieceCartCommonParams(data)
-      request(apiMap.findPieceCartInfo, { ...data })
-        .then((res: any) => {
-          res = this.__pieceCartResFormat(res)
-          Taro.setStorageSync('pieceCartInfo', res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          this.__pieceCartStatusHint(err)
-          reject(err)
-        })
-    })
+      let res: any = await request(apiMap.findPieceCartInfo, { ...data })
+      res = this.__pieceCartResFormat(res)
+      await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      this.__pieceCartStatusHint(err)
+      throw err
+    }
   }
 
   // 更新拼单购物车信息
-  updatePieceCartInfo(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async updatePieceCartInfo(data: Record<string, any> = {}) {
+    try {
       data = this.__pieceCartCommonParams({}, data)
-      request(apiMap.updatePieceCartInfo, { ...data }, { loading: true })
-        .then((res: any) => {
-          res = this.__pieceCartResFormat(res)
-          Taro.setStorageSync('pieceCartInfo', res.data)
-          this.__cartMarketErrorHint(res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          this.__pieceCartStatusHint(err)
-          reject(err)
-        })
-    })
+      let res: any = await request(apiMap.updatePieceCartInfo, { ...data }, { loading: true })
+      res = this.__pieceCartResFormat(res)
+      await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
+      this.__cartMarketErrorHint(res.data)
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      this.__pieceCartStatusHint(err)
+      throw err
+    }
   }
 
   // 修改拼单购物车数量信息
-  updatePieceCartCount(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async updatePieceCartCount(data: Record<string, any> = {}) {
+    try {
       data = this.__pieceCartCommonParams({}, data)
-      request(apiMap.updatePieceCartCount, { ...data }, { loading: true })
-        .then((res: any) => {
-          res = this.__pieceCartResFormat(res)
-          Taro.setStorageSync('pieceCartInfo', res.data)
-          this.__cartMarketErrorHint(res.data)
-          this.__cartActivityLimitHint(res.data)
-          resolve(res)
-        })
-        .catch((err: any) => {
-          this.__pieceCartStatusHint(err)
-          reject(err)
-        })
-    })
+      let res: any = await request(apiMap.updatePieceCartCount, { ...data }, { loading: true })
+      res = this.__pieceCartResFormat(res)
+      await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
+      this.__cartMarketErrorHint(res.data)
+      this.__cartActivityLimitHint(res.data)
+      return res
+    } catch (err: any) {
+      this.__pieceCartStatusHint(err)
+      throw err
+    }
   }
 
   // 清空拼单购物车信息
-  cleanPieceCartInfo(data: Record<string, any> = {}) {
-    return new Promise((resolve, reject) => {
+  async cleanPieceCartInfo(data: Record<string, any> = {}) {
+    try {
       data = this.__pieceCartCommonParams({}, data)
-      request(apiMap.cleanPieceCartInfo, { ...data })
-        .then((res: any) => {
-          Taro.setStorageSync('pieceCartInfo', {})
-          resolve(res)
-        })
-        .catch((err: any) => {
-          this.__pieceCartStatusHint(err)
-          reject(err)
-        })
-    })
+      const res: any = await request(apiMap.cleanPieceCartInfo, { ...data })
+      await Taro.setStorage({ key: 'pieceCartInfo', data: {} })
+      return res
+    } catch (err: any) {
+      this.__pieceCartStatusHint(err)
+      throw err
+    }
   }
 
   // 更新拼单信息
-  updatePieceInfo(pieceInfo: Record<string, any> = {}) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('pieceInfo', pieceInfo)
-      resolve(undefined)
-    })
+  async updatePieceInfo(pieceInfo: Record<string, any> = {}) {
+    await Taro.setStorage({ key: 'pieceInfo', data: pieceInfo })
+    return Promise.resolve(undefined)
   }
 
   // 更新定位信息
-  updatePositionInfo(positionInfo: Record<string, any> = {}) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('positionInfo', positionInfo)
-      resolve(undefined)
-    })
+  async updatePositionInfo(positionInfo: Record<string, any> = {}) {
+    await Taro.setStorage({ key: 'positionInfo', data: positionInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步系统设备信息
-  updateSystemInfo() {
-    return new Promise((resolve) => {
-      try {
-        const systemInfo = Taro.getSystemInfoSync()
-        Taro.setStorageSync('systemInfo', systemInfo)
-      } catch {}
-      resolve(undefined)
-    })
+  async updateSystemInfo() {
+    try {
+      const systemInfo = Taro.getSystemInfoSync()
+      await Taro.setStorage({ key: 'systemInfo', data: systemInfo })
+    } catch {}
+    return Promise.resolve(undefined)
   }
 
   // 更新弹层频率信息
-  updatePopupInfo(popKey: string, popType: string, image: string) {
-    return new Promise((resolve) => {
-      const popupInfo = Taro.getStorageSync('popupInfo') || {}
-      popupInfo[`${popKey}_${popType}`] = image
-      Taro.setStorageSync('popupInfo', popupInfo)
-      resolve(undefined)
-    })
+  async updatePopupInfo(popKey: string, popType: string, image: string) {
+    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    popupInfo[`${popKey}_${popType}`] = image
+    await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步注册会员是否拦截信息
-  updateLoginIntercept(isIntercept: boolean) {
-    return new Promise((resolve) => {
-      const popupInfo = Taro.getStorageSync('popupInfo') || {}
-      popupInfo.loginIntercept = isIntercept
-      Taro.setStorageSync('popupInfo', popupInfo)
-      resolve(undefined)
-    })
+  async updateLoginIntercept(isIntercept: boolean) {
+    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    popupInfo.loginIntercept = isIntercept
+    await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步点餐页浮标信息
-  updateMenuFloatImage(image: string) {
-    return new Promise((resolve) => {
-      const popupInfo = Taro.getStorageSync('popupInfo') || {}
-      popupInfo.menuFloatImage = image
-      Taro.setStorageSync('popupInfo', popupInfo)
-      resolve(undefined)
-    })
+  async updateMenuFloatImage(image: string) {
+    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    popupInfo.menuFloatImage = image
+    await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步订单浮标信息
-  updateOrderFloatImage(image: string) {
-    return new Promise((resolve) => {
-      const popupInfo = Taro.getStorageSync('popupInfo') || {}
-      popupInfo.orderFloatImage = image
-      Taro.setStorageSync('popupInfo', popupInfo)
-      resolve(undefined)
-    })
+  async updateOrderFloatImage(image: string) {
+    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    popupInfo.orderFloatImage = image
+    await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
+    return Promise.resolve(undefined)
   }
 
   // 同步切前台参数信息
-  updateQueryInfo(queryInfo: any) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('queryInfo', queryInfo)
+  async updateQueryInfo(queryInfo: any) {
+    await Taro.setStorage({ key: 'queryInfo', data: queryInfo })
 
-      const scanCode: any = tools.getScanCode() || {}
-      const regChannelCode = scanCode.regChannelCode || scanCode.regStoreCode || ''
-      const scanSplit = regChannelCode.split('|') || []
-      
-      sensors.registerApp &&
-        sensors.registerApp({
-          promotion_channel_id: scanSplit[0] || '',
-          store_channel_id: scanCode.regStoreCode || ''
-        })
+    const scanCode: any = tools.getScanCode() || {}
+    const regChannelCode = scanCode.regChannelCode || scanCode.regStoreCode || ''
+    const scanSplit = regChannelCode.split('|') || []
+    
+    sensors.registerApp &&
+      sensors.registerApp({
+        promotion_channel_id: scanSplit[0] || '',
+        store_channel_id: scanCode.regStoreCode || ''
+      })
 
-      resolve(undefined)
-    })
+    return Promise.resolve(undefined)
   }
 
   // 同步券商品流程信息
-  updateCouponInfo(couponInfo: Record<string, any> = {}) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('couponInfo', couponInfo)
-      resolve(undefined)
-    })
+  async updateCouponInfo(couponInfo: Record<string, any> = {}) {
+    await Taro.setStorage({ key: 'couponInfo', data: couponInfo })
+    return Promise.resolve(undefined)
   }
 
   // 清空券商品流程信息
-  cleanCouponInfo() {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('couponInfo', {})
-      resolve(undefined)
-    })
+  async cleanCouponInfo() {
+    await Taro.setStorage({ key: 'couponInfo', data: {} })
+    return Promise.resolve(undefined)
   }
 
   // 同步活动商品流程信息
-  updateActiveInfo(activeInfo: Record<string, any> = {}) {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('activeInfo', activeInfo)
-      resolve(undefined)
-    })
+  async updateActiveInfo(activeInfo: Record<string, any> = {}) {
+    await Taro.setStorage({ key: 'activeInfo', data: activeInfo })
+    return Promise.resolve(undefined)
   }
 
   // 清空活动商品流程信息
-  cleanActiveInfo() {
-    return new Promise((resolve) => {
-      Taro.setStorageSync('activeInfo', {})
-      resolve(undefined)
-    })
+  async cleanActiveInfo() {
+    await Taro.setStorage({ key: 'activeInfo', data: {} })
+    return Promise.resolve(undefined)
   }
 }
 
