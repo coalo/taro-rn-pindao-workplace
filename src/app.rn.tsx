@@ -6,7 +6,7 @@ import { store } from './store'
 function App(props: PropsWithChildren) {
   useLaunch(() => {
     console.log('App launched (RN).')
-    Taro.switchTab({ url: '/pages/demo-gy/index' })
+    Taro.switchTab({ url: '/pages/demo/index' })
   })
 
   return (

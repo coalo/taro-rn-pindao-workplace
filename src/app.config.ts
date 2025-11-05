@@ -2,6 +2,7 @@ export default defineAppConfig({
   pages: [
     // 'pages/work/index',
     // 'pages/task/index',
+     'pages/demo/index',
     'pages/demo-gy/index',
     'pages/demo-lp/index',
     'pages/demo-zy/index',
@@ -27,6 +28,10 @@ export default defineAppConfig({
       //   pagePath: 'pages/task/index',
       //   text: '任务中心'
       // },
+      {
+        pagePath: 'pages/demo/index',
+        text: '组件演示'
+      },
       {
         pagePath: 'pages/demo-gy/index',
         text: '组件演示-gy'
