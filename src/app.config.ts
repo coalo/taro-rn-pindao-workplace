@@ -27,8 +27,17 @@ export default defineAppConfig({
       },
       {
         pagePath: 'pages/demo/index',
-        text: '组件演示'
+        text: '组件演示-gy'
       },
+      {
+        pagePath: 'pages/demo/index',
+        text: '组件演示-lp'
+      },
+      {
+        pagePath: 'pages/demo/index',
+        text: '组件演示-zy'
+      },
+      
       {
         pagePath: 'pages/mine/index',
         text: '我的'
