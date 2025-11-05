@@ -5,7 +5,22 @@ module.exports = {
     ['taro', {
       framework: 'react',
       ts: true,
-      compiler: 'webpack5',
-    }]
-  ]
+    }],
+  ],
+  plugins: [
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        alias: {
+          '@': './src',
+          '@components': './src/components',
+          '@ui': './src/ui',
+          '@utils': './src/utils',
+          '@styles': './src/styles',
+          '@assets': './src/assets',
+        },
+      },
+    ],
+  ],
 }

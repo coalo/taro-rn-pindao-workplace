@@ -1,8 +1,5 @@
 import { View, Text } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
-import Card from '../../components/common/Card'
-import AdaptView from '../../components/common/AdaptView'
-import UIButton from '../../ui/Button'
 
 
 export default function Task() {
@@ -17,25 +14,14 @@ export default function Task() {
   ]
 
   return (
-    <AdaptView className='p-md'>
-      <Text className='font-40 mb-30'>任务中心</Text>
+    <View style={{ padding: 16 }}>
+      <View style={{ marginBottom: 30 }}>
+        <Text style={{ fontSize: 20 }}>任务中心</Text>
+      </View>
 
-      <Card title='任务列表' extra={(
-        <UIButton size='small'>新增任务</UIButton>
-      )}>
-        {tasks.map(item => (
-          <AdaptView key={item.id} className='flex flex-row items-center justify-between py-10'>
-            <AdaptView className='flex flex-column flex-1'>
-              <Text className='font-16 font-medium text-base'>{item.title}</Text>
-              <Text className='font-14 text-secondary mt-6'>{item.desc}</Text>
-            </AdaptView>
-            <AdaptView className='flex flex-row items-center'>
-              <Text className='font-12 text-info mr-12'>{item.status}</Text>
-              <UIButton size='small'>详情</UIButton>
-            </AdaptView>
-          </AdaptView>
-        ))}
-      </Card>
-    </AdaptView>
+      <View>
+        <Text>组件库已清空，待重新组织</Text>
+      </View>
+    </View>
   )
 }

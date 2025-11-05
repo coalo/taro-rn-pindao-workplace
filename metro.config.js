@@ -1,5 +1,6 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
 const { getMetroConfig } = require('@tarojs/rn-supporter')
+const path = require('path')
 
 /**
  * Metro configuration
@@ -7,7 +8,18 @@ const { getMetroConfig } = require('@tarojs/rn-supporter')
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {}
+const config = {
+  resolver: {
+    extraNodeModules: {
+      '@': path.resolve(__dirname, 'src'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@ui': path.resolve(__dirname, 'src/ui'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@styles': path.resolve(__dirname, 'src/styles'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
+    },
+  },
+}
 
 module.exports = (async function (){
   return mergeConfig(getDefaultConfig(__dirname), await getMetroConfig(), config)

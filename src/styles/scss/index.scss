@@ -10,13 +10,13 @@
  */
 
 // 导入变量
-@import './variables';
+@import './_variables';
 
 // 导入 Mixins
-@import './mixins';
+@import './_mixins';
 
 // 导入全局样式（可选，根据需要引入）
-// @import './global';
+@import './_global';
 
 // 导入工具类（可选，按需引入）
-// @import './utilities';
+@import './_utilities';
