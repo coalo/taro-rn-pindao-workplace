@@ -2,6 +2,27 @@
  * 通用工具函数
  */
 
+// 兼容原生小程序工具集合导出（保持文件名与命名一致）
+export { default as apiMap } from './mapFile/apiMap'
+export { default as hostMap } from './mapFile/hostMap'
+export { default as pathMap } from './mapFile/pathMap'
+export { default as refMap } from './mapFile/refMap'
+export { default as routeMap } from './mapFile/routeMap'
+export { default as scanMap } from './mapFile/scanMap'
+export { default as behavior } from './behaviorFile/behavior'
+export { default as check } from './toolFile/check'
+export { default as Specs } from './toolFile/specs'
+export { default as business } from './toolFile/business'
+export { default as tools } from './toolFile/tools'
+export { default as dataSync } from './dataFile/dataSync'
+export { default as request } from './dataFile/request'
+export { default as upload } from './dataFile/upload'
+export { default as config } from './commonFile/config'
+export { default as base64 } from './commonFile/base64'
+export { default as scene } from './commonFile/scene'
+export { default as theme } from './commonFile/theme'
+export { default as sensors } from './toolFile/sensors'
+
 /**
  * 延迟执行
  * @param ms 延迟毫秒数
