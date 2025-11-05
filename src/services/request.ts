@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro'
-import { API_BASE_URL } from '@/constants/api'
+import { API_BASE_URL } from '@/utils/mapFile/api'
 
 /**
  * 请求配置接口
