@@ -7,6 +7,7 @@ import hostMap from '../mapFile/hostMap'
 import config from '../commonFile/config'
 import theme from '../commonFile/theme'
 import base64 from '../commonFile/base64'
+import type { ApiResponse } from '../typeFile/apiType'
 
 // 是否开启请求日志
 const OPEN_REQUEST_LOG = true
@@ -115,8 +116,8 @@ const consoleRequestLog = (
 }
 
 // 主请求函数
-const request = (url: string, data: Record<string, any> = {}, cfg: Record<string, any> = {}) => {
-  return new Promise((resolve, reject) => {
+const request = <T = any>(url: string, data: Record<string, any> = {}, cfg: Record<string, any> = {}): Promise<ApiResponse<T>> => {
+  return new Promise<ApiResponse<T>>((resolve, reject) => {
     if (cfg.loading) {
       Taro.showLoading({ title: 'Loading...', mask: true })
     }

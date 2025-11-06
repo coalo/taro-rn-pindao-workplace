@@ -3,6 +3,7 @@ import Taro, { useLoad, useDidShow, useDidHide } from '@tarojs/taro'
 import { useState, useRef } from 'react'
 import { PdView } from '@/components/PdCore'
 import { request, apiMap, pathMap, check, tools, config, business, sensors } from '@/utils'
+import type { BannerInfo, HomeConfigData } from '@/utils'
 
 import {
   Banner,
@@ -55,17 +56,6 @@ export default function Demo() {
   const [isMember, setIsMember] = useState(false)
   const [bannerIndex, setBannerIndex] = useState(0)
   const [taskInfo, setTaskInfo] = useState<any>({})
-  //状态管理consolelog
-  console.log('storeInfo:', storeInfo)
-  console.log('memberInfo:', memberInfo)
-  console.log('homeUiInfo:', homeUiInfo)
-  console.log('marketInfo:', marketInfo)
-  console.log('articleInfo:', articleInfo)
-  console.log('questionnaireInfo:', questionnaireInfo)
-  console.log('popupActives:', popupActives)
-  console.log('isMember:', isMember)
-  console.log('bannerIndex:', bannerIndex)
-  console.log('taskInfo:', taskInfo)
 
   // 属性管理
   const loadComplete = useRef(false)
@@ -95,9 +85,9 @@ export default function Demo() {
   // 获取首页 Banner
   const getHomeBanner = async () => {
     try {
-      const res = await request(apiMap.getHomeBanner)
+      const res = await request<BannerInfo[]>(apiMap.getHomeBanner)
       setBannerInfo(res.data || [])
-      console.log('getHomeBanner - 成功获取 Banner 数据')
+      console.log('getHomeBanner - Banner 数据:', res.data)
     } catch (err) {
       console.error('getHomeBanner error:', err)
       throw err

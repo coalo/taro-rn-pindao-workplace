@@ -2,7 +2,7 @@
  * 通用工具函数
  */
 
-// 兼容原生小程序工具集合导出（保持文件名与命名一致）
+// 兰容原生小程序工具集合导出（保持文件名与命名一致）
 export { default as apiMap } from './mapFile/apiMap'
 export { default as hostMap } from './mapFile/hostMap'
 export { default as pathMap } from './mapFile/pathMap'
@@ -23,6 +23,9 @@ export { default as base64 } from './commonFile/base64'
 export { default as scene } from './commonFile/scene'
 export { default as theme } from './commonFile/theme'
 export { default as sensors } from './toolFile/sensors'
+
+// 导出 API 类型定义
+export * from './typeFile/apiType'
 
 /**
  * 延迟执行
