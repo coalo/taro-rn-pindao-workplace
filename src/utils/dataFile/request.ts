@@ -3,21 +3,24 @@
  * 从原生小程序完整迁移，保持变量名与逻辑一致
  */
 import Taro from '@tarojs/taro'
+import CryptoJS from 'crypto-js'
 import hostMap from '../mapFile/hostMap'
 import config from '../commonFile/config'
 import theme from '../commonFile/theme'
-import base64 from '../commonFile/base64'
 import type { ApiResponse } from '../typeFile/apiType'
 
 // 是否开启请求日志
 const OPEN_REQUEST_LOG = true
+// 敏感数据加密秘钥
+const ENCRYPT_KEY = 'bEZd3soOfZvFptks'
 // 敏感数据加密向量
 const ENCRYPT_IV = 'bEZd3soOfZvFptks'
 
-// 获取请求加密串（占位实现：使用 Base64 代替 HMAC-SHA1）
+// 获取请求加密串（与原生小程序保持一致）
 const getRequestSignature = () => {
+  const secret = 'sArMTldQ9tqU19XIRDMWz7BO5WaeBnrezA'
   const nonce = Math.floor(Math.random() * 1000000)
-  const openId = Taro.getStorageSync('openId') || ''
+  const openId = 'QL6ZOftGzbziPlZwfiXM'
   const timestamp = Math.floor(Date.now() / 1000)
   const encryption = encodeURI(`nonce=${nonce}&openId=${openId}&timestamp=${timestamp}`)
   
@@ -25,15 +28,22 @@ const getRequestSignature = () => {
     nonce,
     openId,
     timestamp,
-    // 占位：实际应使用 crypto.HmacSHA1
-    signature: base64.encode(encryption)
+    signature: CryptoJS.HmacSHA1(encryption, secret).toString(CryptoJS.enc.Base64)
   }
 }
 
-// 获取敏感数据加密串（占位实现：使用 Base64 代替 AES）
-export const getEncryptData = (data: any, _iv: string | null = null): string => {
+// 获取敏感数据加密串（与原生小程序保持一致）
+export const getEncryptData = (data: any, iv: string | null = null): string => {
   try {
-    return base64.encode(JSON.stringify(data || ''))
+    return CryptoJS.AES.encrypt(
+      JSON.stringify(data),
+      CryptoJS.enc.Utf8.parse(ENCRYPT_KEY),
+      {
+        iv: CryptoJS.enc.Utf8.parse(iv || ENCRYPT_IV),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      }
+    ).toString()
   } catch {
     return ''
   }
@@ -133,8 +143,8 @@ const request = <T = any>(url: string, data: Record<string, any> = {}, cfg: Reco
     }
     
     if (positionInfo.latitude && positionInfo.longitude) {
-      header.lat2 = getEncryptData(positionInfo.latitude, cfg.iv) || ''
-      header.lng2 = getEncryptData(positionInfo.longitude, cfg.iv) || ''
+      header['lat2'] = getEncryptData(positionInfo.latitude, cfg.iv) || ''
+      header['lng2'] = getEncryptData(positionInfo.longitude, cfg.iv) || ''
     }
     
     Taro.request({
