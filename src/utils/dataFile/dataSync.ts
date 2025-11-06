@@ -194,7 +194,8 @@ class DataSync {
     }
     await Taro.setStorage({ key: 'storeInfo', data: storeInfo })
     
-    const configInfo = Taro.getStorageSync('configInfo') || {}
+    const configInfoRes = await Taro.getStorage({ key: 'configInfo' }).catch(() => ({ data: {} }))
+    const configInfo = configInfoRes.data || {}
     configInfo.currency = storeInfo.countryCurrencyTag
     await Taro.setStorage({ key: 'configInfo', data: configInfo })
 
@@ -207,7 +208,8 @@ class DataSync {
 
     try {
       await this.syncShenceABApi()
-      const strategyGroup = Taro.getStorageSync('strategyGroup') || {}
+      const strategyGroupRes = await Taro.getStorage({ key: 'strategyGroup' }).catch(() => ({ data: {} }))
+      const strategyGroup = strategyGroupRes.data || {}
       sensors.registerApp &&
         sensors.registerApp({
           abTest: () => {
@@ -298,16 +300,19 @@ class DataSync {
   }
 
   // 常规购物车公共入参 仅类内部调用
-  __normalCartCommonParams(data: Record<string, any>) {
+  async __normalCartCommonParams(data: Record<string, any>) {
     const commonParams: Record<string, any> = {
       cartType: 1,
       supportSlitFlag: true,
       hasSupIncrease: true
     }
     
-    const couponInfo = Taro.getStorageSync('couponInfo') || {}
-    const activeInfo = Taro.getStorageSync('activeInfo') || {}
-    const normalCartInfo = Taro.getStorageSync('normalCartInfo') || {}
+    const couponInfoRes = await Taro.getStorage({ key: 'couponInfo' }).catch(() => ({ data: {} }))
+    const activeInfoRes = await Taro.getStorage({ key: 'activeInfo' }).catch(() => ({ data: {} }))
+    const normalCartInfoRes = await Taro.getStorage({ key: 'normalCartInfo' }).catch(() => ({ data: {} }))
+    const couponInfo = couponInfoRes.data || {}
+    const activeInfo = activeInfoRes.data || {}
+    const normalCartInfo = normalCartInfoRes.data || {}
     
     if (typeof (check as any).isCouponProcess === 'function' && (check as any).isCouponProcess()) {
       commonParams.choiceCouponCode = couponInfo.couponCode
@@ -323,8 +328,9 @@ class DataSync {
   }
 
   // 拼单购物车公共入参 仅类内部调用
-  __pieceCartCommonParams(data: Record<string, any> = {}, item: Record<string, any> = {}) {
-    const pieceInfo = Taro.getStorageSync('pieceInfo') || {}
+  async __pieceCartCommonParams(data: Record<string, any> = {}, item: Record<string, any> = {}) {
+    const pieceInfoRes = await Taro.getStorage({ key: 'pieceInfo' }).catch(() => ({ data: {} }))
+    const pieceInfo = pieceInfoRes.data || {}
     const commonParams: Record<string, any> = {
       pinId: pieceInfo.pinId,
       channel: pieceInfo.channel,
@@ -345,7 +351,7 @@ class DataSync {
   // 同步普通购物车信息
   async syncNormalCart(data: Record<string, any> = {}) {
     try {
-      data = this.__normalCartCommonParams(data)
+      data = await this.__normalCartCommonParams(data)
       const res: any = await request(apiMap.findNormalCartInfo, { ...data })
       await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
       this.__cartActivityLimitHint(res.data)
@@ -362,7 +368,7 @@ class DataSync {
   // 更新普通购物车信息
   async updateNormalCartInfo(data: Record<string, any> = {}) {
     try {
-      data = this.__normalCartCommonParams(data)
+      data = await this.__normalCartCommonParams(data)
       const res: any = await request(apiMap.updateNormalCartInfo, data, { loading: true })
       await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
       this.__cartMarketErrorHint(res.data)
@@ -380,7 +386,7 @@ class DataSync {
   // 修改普通购物车数量
   async updateNormalCartCount(data: Record<string, any> = {}) {
     try {
-      data = this.__normalCartCommonParams(data)
+      data = await this.__normalCartCommonParams(data)
       const res: any = await request(apiMap.updateNormalCartCount, { ...data }, { loading: true })
       await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
       this.__cartMarketErrorHint(res.data)
@@ -398,7 +404,7 @@ class DataSync {
   // 普通购物车列表商品勾选与取消
   async updateNormalCartSelect(data: Record<string, any> = {}) {
     try {
-      data = this.__normalCartCommonParams(data)
+      data = await this.__normalCartCommonParams(data)
       const res: any = await request(apiMap.updateNormalCartSelect, { ...data }, { loading: true })
       await Taro.setStorage({ key: 'normalCartInfo', data: res.data })
       this.__cartMarketErrorHint(res.data)
@@ -431,7 +437,7 @@ class DataSync {
   // 同步拼单购物车信息
   async syncPieceCart(data: Record<string, any> = {}) {
     try {
-      data = this.__pieceCartCommonParams(data)
+      data = await this.__pieceCartCommonParams(data)
       let res: any = await request(apiMap.findPieceCartInfo, { ...data })
       res = this.__pieceCartResFormat(res)
       await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
@@ -446,7 +452,7 @@ class DataSync {
   // 更新拼单购物车信息
   async updatePieceCartInfo(data: Record<string, any> = {}) {
     try {
-      data = this.__pieceCartCommonParams({}, data)
+      data = await this.__pieceCartCommonParams({}, data)
       let res: any = await request(apiMap.updatePieceCartInfo, { ...data }, { loading: true })
       res = this.__pieceCartResFormat(res)
       await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
@@ -462,7 +468,7 @@ class DataSync {
   // 修改拼单购物车数量信息
   async updatePieceCartCount(data: Record<string, any> = {}) {
     try {
-      data = this.__pieceCartCommonParams({}, data)
+      data = await this.__pieceCartCommonParams({}, data)
       let res: any = await request(apiMap.updatePieceCartCount, { ...data }, { loading: true })
       res = this.__pieceCartResFormat(res)
       await Taro.setStorage({ key: 'pieceCartInfo', data: res.data })
@@ -478,7 +484,7 @@ class DataSync {
   // 清空拼单购物车信息
   async cleanPieceCartInfo(data: Record<string, any> = {}) {
     try {
-      data = this.__pieceCartCommonParams({}, data)
+      data = await this.__pieceCartCommonParams({}, data)
       const res: any = await request(apiMap.cleanPieceCartInfo, { ...data })
       await Taro.setStorage({ key: 'pieceCartInfo', data: {} })
       return res
@@ -511,7 +517,8 @@ class DataSync {
 
   // 更新弹层频率信息
   async updatePopupInfo(popKey: string, popType: string, image: string) {
-    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    const popupInfoRes = await Taro.getStorage({ key: 'popupInfo' }).catch(() => ({ data: {} }))
+    const popupInfo = popupInfoRes.data || {}
     popupInfo[`${popKey}_${popType}`] = image
     await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
     return Promise.resolve(undefined)
@@ -519,7 +526,8 @@ class DataSync {
 
   // 同步注册会员是否拦截信息
   async updateLoginIntercept(isIntercept: boolean) {
-    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    const popupInfoRes = await Taro.getStorage({ key: 'popupInfo' }).catch(() => ({ data: {} }))
+    const popupInfo = popupInfoRes.data || {}
     popupInfo.loginIntercept = isIntercept
     await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
     return Promise.resolve(undefined)
@@ -527,7 +535,8 @@ class DataSync {
 
   // 同步点餐页浮标信息
   async updateMenuFloatImage(image: string) {
-    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    const popupInfoRes = await Taro.getStorage({ key: 'popupInfo' }).catch(() => ({ data: {} }))
+    const popupInfo = popupInfoRes.data || {}
     popupInfo.menuFloatImage = image
     await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
     return Promise.resolve(undefined)
@@ -535,7 +544,8 @@ class DataSync {
 
   // 同步订单浮标信息
   async updateOrderFloatImage(image: string) {
-    const popupInfo = Taro.getStorageSync('popupInfo') || {}
+    const popupInfoRes = await Taro.getStorage({ key: 'popupInfo' }).catch(() => ({ data: {} }))
+    const popupInfo = popupInfoRes.data || {}
     popupInfo.orderFloatImage = image
     await Taro.setStorage({ key: 'popupInfo', data: popupInfo })
     return Promise.resolve(undefined)
